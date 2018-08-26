@@ -1,0 +1,27 @@
+.details-tab {
+    height: 100px;
+    width: 100%;
+    line-height: 100px;
+    text-align: center;
+    position: fixed;
+    bottom: 0;
+    display: flex;
+    justify-content: space-around;
+    color: #FCF6EF;
+    font-family: 'Courier New', Courier, monospace;
+    .tab-button {
+        width: 100%;
+        background-color: blue;
+        display: flex;
+        font-size: 26px;
+        justify-content: space-around;
+    }
+    .shop-button {
+        width: 100%;
+        background-color: #63BA76;
+    }
+    .sell-button {
+        width: 100%;
+        background-color: #FDA625;
+    }
+}

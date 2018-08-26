@@ -39,7 +39,7 @@ export default class Index extends Component {
   goodsActive(event) {
     const goodId = event.currentTarget.dataset.goodid;
     Taro.navigateTo({
-      url: '../goodDetails/goodDetails?goodid=' + goodId
+      url: '../goodsDetails/goodsDetails?goodid=' + goodId
     })
   }
 
