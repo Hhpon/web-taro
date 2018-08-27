@@ -1,5 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text, Image, Swiper } from '@tarojs/components'
+import { View, Text, Image, Swiper, Button } from '@tarojs/components'
 
 import './goodsDetails.scss'
 
@@ -41,6 +41,10 @@ export default class goodsDetails extends Component {
         // })
     }
 
+    sellButton() {
+
+    }
+
     render() {
         return (
             <View>
@@ -51,8 +55,9 @@ export default class goodsDetails extends Component {
                         <View>购物车</View>
                     </View>
                     <View className='shop-button'>加入购物车</View>
-                    <View className='sell-button'>立即购买</View>
+                    <View onClick={this.sellButton()} className='sell-button'>立即购买</View>
                 </View>
+
             </View>
         )
     }

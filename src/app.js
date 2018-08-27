@@ -6,8 +6,8 @@ import './app.scss'
 class App extends Component {
   config = {
     pages: [
-      'pages/goodsDetails/goodsDetails',
       'pages/index/index',
+      'pages/goodsDetails/goodsDetails',
     ],
     window: {
       backgroundTextStyle: 'light',

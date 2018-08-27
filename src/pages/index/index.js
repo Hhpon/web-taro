@@ -15,12 +15,25 @@ export default class Index extends Component {
       sliderGoods: [],
       Goods: [],
       imgheights: 0,
-      imgUrls: []
+      imgUrls: [],
+      isshowbutton: false
     }
   }
 
   componentWillMount() {
     this.getGoods(0);
+
+    Taro.getSetting({
+      success: (res) => {
+        console.log(res);
+        const userInfo = res.authSetting['scope.userInfo'];
+        if (!userInfo) {
+          this.setState({
+            isshowbutton: true
+          })
+        }
+      }
+    })
   }
 
   componentDidMount() { }
@@ -83,7 +96,15 @@ export default class Index extends Component {
     });
   }
 
+  getUserinfo(e) {
+    
+    this.setState({
+      isshowbutton: false
+    })
+  }
+
   render() {
+    const isshowbutton = this.state.isshowbutton;
     const navHeader = this.state.navName.map((nav) => {
       return (
         <Text onClick={this.navActive} data-index='{{index}}'>{nav}</Text>
@@ -114,7 +135,7 @@ export default class Index extends Component {
     })
 
     return (
-      <View>
+      <View className='container'>
         <View className='nav-container'>
           {navHeader}
         </View>
@@ -125,6 +146,13 @@ export default class Index extends Component {
         <View>
           {goodsDebli}
         </View>
+        {
+          isshowbutton &&
+          <View className='getinfo-button'>
+            <Button type='prime' open-type='getUserInfo' onGetUserInfo={this.getUserinfo}>点我啊</Button>
+          </View>
+        }
+
       </View>
     )
   }
