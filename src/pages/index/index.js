@@ -1,5 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image, Swiper } from '@tarojs/components'
+import { AtModal, AtModalHeader, AtModalContent, AtModalAction } from 'taro-ui'
 
 import './index.scss'
 
@@ -16,20 +17,21 @@ export default class Index extends Component {
       Goods: [],
       imgheights: 0,
       imgUrls: [],
-      isshowbutton: false
+      isOpened: false,
+      openId: ''
     }
   }
 
+  //生命周期 - 页面加载过程中请求商品title以及对新用户进行授权处理
   componentWillMount() {
     this.getGoods(0);
-
     Taro.getSetting({
       success: (res) => {
         console.log(res);
         const userInfo = res.authSetting['scope.userInfo'];
         if (!userInfo) {
           this.setState({
-            isshowbutton: true
+            isOpened: true
           })
         }
       }
@@ -44,11 +46,13 @@ export default class Index extends Component {
 
   componentDidHide() { }
 
+  // 定义导航栏的点击事件
   navActive(event) {
     const index = event.currentTarget.dataset.index;
     this.getGoods(index);
   }
 
+  // 跳转到商品详情页
   goodsActive(event) {
     const goodId = event.currentTarget.dataset.goodid;
     Taro.navigateTo({
@@ -56,6 +60,7 @@ export default class Index extends Component {
     })
   }
 
+  // 上传类目请求数据
   getGoods(index) {
     this.state.sliderGoods = [];
     this.state.Goods = [];
@@ -86,6 +91,7 @@ export default class Index extends Component {
     })
   }
 
+  // 小程序图片的宽度处理
   imageLoad(e) {
     var imgwidth = e.detail.width, imgheight = e.detail.height, ratio = imgwidth / imgheight;
     //计算的高度值
@@ -96,15 +102,44 @@ export default class Index extends Component {
     });
   }
 
+  // 授权后获取用户信息
   getUserinfo(e) {
-    
-    this.setState({
-      isshowbutton: false
-    })
+    console.log(e.detail)
+    const userInfo = e.detail.userInfo;
+    const that = this;
+    if (e.detail.errMsg === 'getUserInfo:ok') {
+      this.setState({
+        isOpened: false
+      })
+      Taro.login({
+        success(res) {
+          Taro.request({
+            url: 'http://localhost:7001/onLogin',
+            method: 'POST',
+            data: {
+              code: res.code,
+              userInfo: userInfo
+            }
+          }).then(res => {
+            console.log(res);
+            that.setState({
+              openId: res.data
+            })
+            Taro.setStorage({ key: 'openid', data: res.data }).then(res => {
+              console.log('存储成功');
+            })
+          })
+        }
+      })
+    }
+  }
+
+  handleConfirm() {
+    console.log('确认按钮')
   }
 
   render() {
-    const isshowbutton = this.state.isshowbutton;
+    const isOpened = this.state.isOpened;
     const navHeader = this.state.navName.map((nav) => {
       return (
         <Text onClick={this.navActive} data-index='{{index}}'>{nav}</Text>
@@ -146,10 +181,21 @@ export default class Index extends Component {
         <View>
           {goodsDebli}
         </View>
+
+        {/* <AtModal isOpened={isOpened}>
+          <AtModalHeader>提示</AtModalHeader>
+          <AtModalContent>
+            欢迎来到全家享团购小程序，是否允许用户授权
+          </AtModalContent>
+          <AtModalAction>
+            <Button type='prime' open-type='getUserInfo' onGetUserInfo={this.getUserinfo}>授权</Button>
+          </AtModalAction>
+        </AtModal> */}
+
         {
-          isshowbutton &&
-          <View className='getinfo-button'>
-            <Button type='prime' open-type='getUserInfo' onGetUserInfo={this.getUserinfo}>点我啊</Button>
+          isOpened &&
+          <View className='getUserinfo-button'>
+            <Button type='prime' open-type='getUserInfo' onGetUserInfo={this.getUserinfo}>授权</Button>
           </View>
         }
 

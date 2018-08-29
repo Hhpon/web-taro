@@ -26,7 +26,7 @@ export default class goodsDetails extends Component {
     }
 
     componentWillMount() {
-        const goodId = this.$router.params.goodid;
+        // const goodId = this.$router.params.goodid;
         // Taro.request({
         //     url: 'http://localhost:7001/getGoodDetails',
         //     method: 'POST',
@@ -42,7 +42,7 @@ export default class goodsDetails extends Component {
     }
 
     sellButton() {
-
+        
     }
 
     render() {
@@ -55,7 +55,7 @@ export default class goodsDetails extends Component {
                         <View>购物车</View>
                     </View>
                     <View className='shop-button'>加入购物车</View>
-                    <View onClick={this.sellButton()} className='sell-button'>立即购买</View>
+                    <View onClick={this.sellButton} className='sell-button'>立即购买</View>
                 </View>
 
             </View>
