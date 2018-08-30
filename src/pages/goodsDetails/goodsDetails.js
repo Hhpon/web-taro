@@ -1,5 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image, Swiper, Button } from '@tarojs/components'
+import { AtFloatLayout } from 'taro-ui'
 
 import './goodsDetails.scss'
 
@@ -21,7 +22,8 @@ export default class goodsDetails extends Component {
                 sliderView: true,
                 subTitle: "10斤 装",
                 titleUrl: "http://pczgqj6xt.bkt.clouddn.com/微信截图_20180813212549.png"
-            }
+            },
+            isOpened: false
         }
     }
 
@@ -42,13 +44,23 @@ export default class goodsDetails extends Component {
     }
 
     sellButton() {
-        
+        this.setState({
+            isOpened: true
+        })
     }
 
     render() {
         return (
             <View>
                 <View>123</View>
+                <AtFloatLayout
+                    isOpened={this.state.isOpened}
+                    title='这是个标题'
+                    onClose={this.handleClose} >
+                    这是内容区 随你怎么写这是内容区 随你怎么写这是内容区
+                    随你怎么写这是内容区 随你怎么写这是内容区 随你怎么写这是内容区
+                    随你怎么写
+                </AtFloatLayout>
                 <View className='details-tab'>
                     <View className='tab-button'>
                         <View>首页</View>
