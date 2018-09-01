@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image, Swiper, Button } from '@tarojs/components'
-import { AtFloatLayout } from 'taro-ui'
+import { AtFloatLayout, AtInputNumber } from 'taro-ui'
 
 import './goodsDetails.scss'
 
@@ -12,35 +12,26 @@ export default class goodsDetails extends Component {
     constructor() {
         super();
         this.state = {
-            goodDetails: {
-                goodsId: "1534647307982",
-                name: "白菜",
-                oldPrice: "300",
-                price: "100",
-                saleAmount: 0,
-                sell: true,
-                sliderView: true,
-                subTitle: "10斤 装",
-                titleUrl: "http://pczgqj6xt.bkt.clouddn.com/微信截图_20180813212549.png"
-            },
-            isOpened: false
+            goodDetails: {},
+            isOpened: false,
+            sellNum: 1
         }
     }
 
     componentWillMount() {
-        // const goodId = this.$router.params.goodid;
-        // Taro.request({
-        //     url: 'http://localhost:7001/getGoodDetails',
-        //     method: 'POST',
-        //     data: {
-        //         goodId: goodId
-        //     }
-        // }).then(res => {
-        //     console.log(res.data);
-        //     this.setState({
-        //         goodsDetails: res.data[0]
-        //     })
-        // })
+        const goodId = this.$router.params.goodid;
+        Taro.request({
+            url: 'http://localhost:7001/getGoodDetails',
+            method: 'POST',
+            data: {
+                goodId: goodId
+            }
+        }).then(res => {
+            console.log(res.data);
+            this.setState({
+                goodDetails: res.data[0]
+            })
+        })
     }
 
     sellButton() {
@@ -48,6 +39,27 @@ export default class goodsDetails extends Component {
             isOpened: true
         })
     }
+    sellNumChange(value) {
+        this.setState({
+            sellNum: value
+        })
+    }
+    sellNowButton(e) {
+        console.log(this.state.sellNum);
+        console.log(this.state.goodDetails);
+        alert('请等待支付接口！');
+        Taro.request({
+            url: 'http://localhost:7001/sellHandle',
+            method: 'POST',
+            data: {
+                sellNum: this.state.sellNum,
+                goodDetails: this.state.goodDetails
+            }
+        }).then(res => {
+            console.log(res);
+        })
+    }
+
 
     render() {
         return (
@@ -55,11 +67,14 @@ export default class goodsDetails extends Component {
                 <View>123</View>
                 <AtFloatLayout
                     isOpened={this.state.isOpened}
-                    title='这是个标题'
+                    title='请输入购买量'
                     onClose={this.handleClose} >
-                    这是内容区 随你怎么写这是内容区 随你怎么写这是内容区
-                    随你怎么写这是内容区 随你怎么写这是内容区 随你怎么写这是内容区
-                    随你怎么写
+                    <AtInputNumber
+                        min={1}
+                        value={this.state.sellNum}
+                        onChange={this.sellNumChange}
+                    />
+                    <Button onClick={this.sellNowButton}>立即购买</Button>
                 </AtFloatLayout>
                 <View className='details-tab'>
                     <View className='tab-button'>
