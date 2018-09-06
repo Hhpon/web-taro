@@ -17,8 +17,8 @@ export default class Index extends Component {
       Goods: [],
       imgheights: 0,
       imgUrls: [],
-      isOpened: false,
-      openId: ''
+      isUserOpened: false,
+      openId: '',
     }
   }
 
@@ -31,7 +31,7 @@ export default class Index extends Component {
         const userInfo = res.authSetting['scope.userInfo'];
         if (!userInfo) {
           this.setState({
-            isOpened: true
+            isUserOpened: true
           })
         }
       }
@@ -109,7 +109,7 @@ export default class Index extends Component {
     const that = this;
     if (e.detail.errMsg === 'getUserInfo:ok') {
       this.setState({
-        isOpened: false
+        isUserOpened: false
       })
       Taro.login({
         success(res) {
@@ -138,8 +138,35 @@ export default class Index extends Component {
     console.log('确认按钮')
   }
 
+  shopButton(e) {
+    let goodDetail = e.currentTarget.dataset.gooddetail;
+    console.log(goodDetail);
+    Taro.request({
+      url: 'http://localhost:7001/shoppingCart',
+      method: 'POST',
+      data: {
+        goodDetail: goodDetail
+      },
+      success(res) {
+        Taro.showToast({
+          title: '添加成功！',
+          icon: 'success',
+          duration: 2000
+        })
+      },
+      fail(res){
+        Taro.showToast({
+          title: '请稍后重试！',
+          icon: 'none',
+          duration: 2000
+        })
+      }
+    })
+  }
+
   render() {
-    const isOpened = this.state.isOpened;
+    const isUserOpened = this.state.isUserOpened;
+    const isToastOpened = this.state.isToastOpened;
     const navHeader = this.state.navName.map((nav) => {
       return (
         <Text onClick={this.navActive} data-index='{{index}}'>{nav}</Text>
@@ -160,7 +187,7 @@ export default class Index extends Component {
           <Image mode='widthFix' style='width:100%' src={good.titleUrl}></Image>
           <View className='goods-container'>
             <View className='goods-title'>{good.name}</View>
-            <View className='goods-button'>去抢购</View>
+            <View className='goods-button' data-goodDetail={good} onClick={this.shopButton}>去抢购</View>
           </View>
           <View className='price-container'>
             <View className='goods-price'>{good.price}</View>
@@ -193,7 +220,7 @@ export default class Index extends Component {
         </AtModal> */}
 
         {
-          isOpened &&
+          isUserOpened &&
           <View className='getUserinfo-button'>
             <Button type='prime' open-type='getUserInfo' onGetUserInfo={this.getUserinfo}>授权</Button>
           </View>

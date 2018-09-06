@@ -47,7 +47,6 @@ export default class goodsDetails extends Component {
     sellNowButton(e) {
         console.log(this.state.sellNum);
         console.log(this.state.goodDetails);
-        alert('请等待支付接口！');
         Taro.request({
             url: 'http://localhost:7001/sellHandle',
             method: 'POST',
