@@ -1,6 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text, Image, Swiper } from '@tarojs/components'
-import { AtModal, AtModalHeader, AtModalContent, AtModalAction } from 'taro-ui'
+import { View, Text, Image, Swiper, Navigator } from '@tarojs/components'
 
 import './index.scss'
 
@@ -13,6 +12,7 @@ export default class Index extends Component {
     super();
     this.state = {
       navName: ['热卖', '水果', '生鲜', '速食', '日百', '生活服务'],
+      navNum: 0,
       sliderGoods: [],
       Goods: [],
       imgheights: 0,
@@ -27,11 +27,17 @@ export default class Index extends Component {
     this.getGoods(0);
     Taro.getSetting({
       success: (res) => {
-        console.log(res);
         const userInfo = res.authSetting['scope.userInfo'];
         if (!userInfo) {
+          console.log('未授权');
           this.setState({
             isUserOpened: true
+          })
+        } else {
+          console.log('已授权');
+          const openId = Taro.getStorageSync('openid');
+          this.setState({
+            openId: openId
           })
         }
       }
@@ -49,6 +55,9 @@ export default class Index extends Component {
   // 定义导航栏的点击事件
   navActive(event) {
     const index = event.currentTarget.dataset.index;
+    this.setState({
+      navNum: index
+    })
     this.getGoods(index);
   }
 
@@ -140,25 +149,35 @@ export default class Index extends Component {
 
   shopButton(e) {
     let goodDetail = e.currentTarget.dataset.gooddetail;
-    console.log(goodDetail);
+    let openId = this.state.openId;
     Taro.request({
       url: 'http://localhost:7001/shoppingCart',
       method: 'POST',
       data: {
-        goodDetail: goodDetail
+        goodDetail: goodDetail,
+        openId: openId
       },
       success(res) {
-        Taro.showToast({
-          title: '添加成功！',
-          icon: 'success',
-          duration: 2000
-        })
+        console.log(res);
+        if (res.data === 100) {
+          Taro.showToast({
+            title: '商品已经添加！',
+            icon: 'success',
+            duration: 1000
+          })
+        } else {
+          Taro.showToast({
+            title: '添加成功！',
+            icon: 'success',
+            duration: 1000
+          })
+        }
       },
-      fail(res){
+      fail(res) {
         Taro.showToast({
           title: '请稍后重试！',
           icon: 'none',
-          duration: 2000
+          duration: 1000
         })
       }
     })
@@ -169,7 +188,7 @@ export default class Index extends Component {
     const isToastOpened = this.state.isToastOpened;
     const navHeader = this.state.navName.map((nav) => {
       return (
-        <Text onClick={this.navActive} data-index='{{index}}'>{nav}</Text>
+        <View className="{{index === navNum?'hover-nav':'nav'}}" onClick={this.navActive} data-index='{{index}}'>{nav}</View>
       )
     })
 
@@ -201,6 +220,16 @@ export default class Index extends Component {
         <View className='nav-container'>
           {navHeader}
         </View>
+
+        <AtTabBar
+          tabList={[
+            { title: '待办事项', text: 8 },
+            { title: '拍照' },
+            { title: '通讯录', dot: true }
+          ]}
+        />
+
+        <View style='height:43px;'></View>
         <Swiper autoplay indicator-dots circular className='swiper' style='height:{{imgheights}}px'>
           {imgList}
         </Swiper>
@@ -208,16 +237,6 @@ export default class Index extends Component {
         <View>
           {goodsDebli}
         </View>
-
-        {/* <AtModal isOpened={isOpened}>
-          <AtModalHeader>提示</AtModalHeader>
-          <AtModalContent>
-            欢迎来到全家享团购小程序，是否允许用户授权
-          </AtModalContent>
-          <AtModalAction>
-            <Button type='prime' open-type='getUserInfo' onGetUserInfo={this.getUserinfo}>授权</Button>
-          </AtModalAction>
-        </AtModal> */}
 
         {
           isUserOpened &&

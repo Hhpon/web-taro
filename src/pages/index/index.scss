@@ -1,11 +1,23 @@
 .container {
     .nav-container {
+        position: fixed;
+        top: 0px;
         display: flex;
         justify-content: space-around;
         width: 100%;
         height: 80px;
         line-height: 80px;
         font-size: 28px;
+        background-color: #FFFFFF;
+        .nav{
+            width: 100%;
+            text-align: center;
+        }
+        .hover-nav{
+            width: 100%;
+            text-align: center;
+            border-bottom: 6px solid #63BA74;
+        }
     }
     .swiper {
         width: 100%;
@@ -45,7 +57,7 @@
         display: flex;
         justify-content: space-between;
     }
-    .getUserinfo-button{
+    .getUserinfo-button {
         width: 100vw;
         height: 100vh;
         position: fixed;
