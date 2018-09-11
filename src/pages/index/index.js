@@ -1,5 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image, Swiper, Navigator } from '@tarojs/components'
+import { AtTabBar } from 'taro-ui'
 
 import './index.scss'
 
@@ -221,15 +222,8 @@ export default class Index extends Component {
           {navHeader}
         </View>
 
-        <AtTabBar
-          tabList={[
-            { title: '待办事项', text: 8 },
-            { title: '拍照' },
-            { title: '通讯录', dot: true }
-          ]}
-        />
-
         <View style='height:43px;'></View>
+
         <Swiper autoplay indicator-dots circular className='swiper' style='height:{{imgheights}}px'>
           {imgList}
         </Swiper>

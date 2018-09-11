@@ -1,0 +1,39 @@
+page {
+    background-color: #F7F7F7;
+    .container {
+        .mall-address {
+            height: 15vh;
+            padding: 0px 30px;
+            background-color: #FFFFFF;
+            .address-top {
+                padding-top: 30px;
+                font-size: 28px;
+                display: flex;
+                align-items: flex-end;
+                .position-icon {
+                    padding-right: 20px;
+                }
+            }
+            .address-bottom {
+                font-size: 24px;
+                color: #B5B5B5;
+                padding-top: 30px;
+                padding-left: 52px;
+            }
+        }
+        .shopping-goods {
+            margin-top: 20px;
+            background-color: #FFFFFF;
+            padding: 0px 30px;
+            .check-all {
+                height: 80px;
+                line-height: 80px;
+                font-size: 28px;
+                border-bottom: 1px solid #ccc;
+                .check-text {
+                    padding-left: 20px;
+                }
+            }
+        }
+    }
+}

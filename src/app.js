@@ -6,6 +6,7 @@ import './app.scss'
 class App extends Component {
   config = {
     pages: [
+      'pages/shopcart/shopcart',
       'pages/index/index',
       'pages/goodsDetails/goodsDetails',
     ],
@@ -13,7 +14,8 @@ class App extends Component {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#fff',
       navigationBarTitleText: 'WeChat',
-      navigationBarTextStyle: 'black'
+      navigationBarTextStyle: 'black',
+      backgroundColor: '#F7F7F7'
     },
     tabBar: {
       color: '#676767',
@@ -27,7 +29,7 @@ class App extends Component {
           selectedIconPath: './asset/tabbar/homed.png'
         },
         {
-          pagePath: 'pages/index/index',
+          pagePath: 'pages/shopcart/shopcart',
           text: '购物车',
           iconPath: './asset/tabbar/shop.png',
           selectedIconPath: './asset/tabbar/shopd.png'

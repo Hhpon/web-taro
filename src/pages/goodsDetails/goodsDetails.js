@@ -1,5 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text, Image, Swiper, Button } from '@tarojs/components'
+import { View, Button } from '@tarojs/components'
 import { AtFloatLayout, AtInputNumber } from 'taro-ui'
 
 import './goodsDetails.scss'
