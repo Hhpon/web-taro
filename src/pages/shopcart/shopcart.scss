@@ -29,9 +29,38 @@ page {
                 height: 80px;
                 line-height: 80px;
                 font-size: 28px;
-                border-bottom: 1px solid #ccc;
+                border-bottom: 1px solid #E3E3E3;
                 .check-text {
                     padding-left: 20px;
+                }
+            }
+            .orderListsDetails {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-bottom: 1px solid #E3E3E3;
+                .goodDetail{
+                    width: 95%;
+                    height: 280px;
+                    display: flex;
+                    align-items: center;
+                    .good-image {
+                        height: 200px;
+                        width: 200px;
+                    }
+                    .good-text{
+                        height: 200px;
+                        padding-left: 20px;
+                        font-size: 28px;
+                        display: flex;
+                        flex-direction: column;
+                        .text-top{
+                            height: 100%;
+                        }
+                        .text-bottom{
+                            font-size: 26px;
+                        }
+                    }
                 }
             }
         }
