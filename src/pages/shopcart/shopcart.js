@@ -4,6 +4,7 @@ import { AtIcon } from 'taro-ui'
 
 import './shopcart.scss'
 
+
 export default class shopcart extends Component {
     config = {
         navigationBarTitleText: '购物车'
@@ -41,16 +42,47 @@ export default class shopcart extends Component {
         })
     }
 
-    goodcheckColor() {
-        console.log('点击商品');
+    goodcheckHandle() {
+        console.log('点击全选');
+    }
+
+    addHandle(e) {
+        const index = e.currentTarget.dataset.index;
+        let orderLists = this.state.orderLists[index];
+        orderLists.shoppingNum += 1;
+        this.setState({
+            orderLists: this.state.orderLists
+        })
+    }
+
+    subtractHandle(e) {
+        const index = e.currentTarget.dataset.index;
+        let orderLists = this.state.orderLists[index];
+        orderLists.shoppingNum -= 1;
+        if (orderLists.shoppingNum === 0) {
+            wx.showModal({
+                title: '提示',
+                content: '确定从购物车删除该商品？',
+                success: function (res) {
+                    if (res.confirm) {
+                        console.log('用户点击确定');
+                    } else if (res.cancel) {
+                        console.log('用户点击取消')
+                    }
+                }
+            })
+        }
+        this.setState({
+            orderLists: this.state.orderLists
+        })
     }
 
     render() {
 
         const orderListsDetails = this.state.orderLists.map((goodsDetail) => {
             return (
-                <View className='orderListsDetails' onClick={this.goodcheckHandle}>
-                    <View>
+                <View className='orderListsDetails'>
+                    <View onClick={this.goodcheckHandle}>
                         <AtIcon value='check-circle' size='20' color={this.state.goodcheckColor}></AtIcon>
                     </View>
                     <View className='goodDetail'>
@@ -63,6 +95,17 @@ export default class shopcart extends Component {
                             <View className='text-bottom'>
                                 <Text style='color:#FFAC46'>￥{goodsDetail.price}</Text>
                                 <Text style='color:#B7B7B7; margin-left: 10px; text-decoration: line-through;'>￥{goodsDetail.oldPrice}</Text>
+                                <View>
+                                    <View onClick={this.addHandle} data-index='{{index}}'>
+                                        <AtIcon value='add-circle' color='#E3E3E3'></AtIcon>
+                                    </View>
+                                    <Text>
+                                        {goodsDetail.shoppingNum}
+                                    </Text>
+                                    <View onClick={this.subtractHandle} data-index='{{index}}'>
+                                        <AtIcon value='subtract-circle' color='#E3E3E3'></AtIcon>
+                                    </View>
+                                </View>
                             </View>
                         </View>
                     </View>

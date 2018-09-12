@@ -40,16 +40,17 @@ page {
                 align-items: center;
                 border-bottom: 1px solid #E3E3E3;
                 .goodDetail{
-                    width: 95%;
-                    height: 280px;
+                    width: 95vw;
+                    height: 25vh;
                     display: flex;
                     align-items: center;
                     .good-image {
-                        height: 200px;
-                        width: 200px;
+                        height: 25vw;
+                        width: 25vw;
                     }
                     .good-text{
-                        height: 200px;
+                        height: 18vh;
+                        width: 70vw;
                         padding-left: 20px;
                         font-size: 28px;
                         display: flex;
@@ -58,6 +59,7 @@ page {
                             height: 100%;
                         }
                         .text-bottom{
+                            width: 100%;
                             font-size: 26px;
                         }
                     }
