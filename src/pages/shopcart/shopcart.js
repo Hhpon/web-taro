@@ -49,7 +49,23 @@ export default class shopcart extends Component {
     addHandle(e) {
         const index = e.currentTarget.dataset.index;
         let orderLists = this.state.orderLists[index];
+        let openId = this.state.openId;
+        let goodsId = orderLists.goodsId;
         orderLists.shoppingNum += 1;
+
+        Taro.request({
+            url: 'http://localhost:7001/editUserOrderList',
+            method: 'POST',
+            data: {
+                kindof: 'add',
+                openId: openId,
+                goodsId: goodsId
+            },
+            success(res) {
+                console.log(res);
+            }
+        })
+
         this.setState({
             orderLists: this.state.orderLists
         })
@@ -58,23 +74,55 @@ export default class shopcart extends Component {
     subtractHandle(e) {
         const index = e.currentTarget.dataset.index;
         let orderLists = this.state.orderLists[index];
+        let openId = this.state.openId;
+        let goodsId = orderLists.goodsId;
         orderLists.shoppingNum -= 1;
+
+        let that = this;
+
         if (orderLists.shoppingNum === 0) {
-            wx.showModal({
+            Taro.showModal({
                 title: '提示',
                 content: '确定从购物车删除该商品？',
                 success: function (res) {
                     if (res.confirm) {
-                        console.log('用户点击确定');
+                        Taro.request({
+                            url: 'http://localhost:7001/deleteUserOrderList',
+                            method: 'POST',
+                            data: {
+                                openId: openId,
+                                goodsId: goodsId
+                            }
+                        }).then(res => {
+                            that.setState({
+                                orderLists: res.data
+                            })
+                        })
                     } else if (res.cancel) {
-                        console.log('用户点击取消')
+                        orderLists.shoppingNum = 1;
+                        that.setState({
+                            orderLists: that.state.orderLists
+                        })
                     }
                 }
             })
+        } else {
+            Taro.request({
+                url: 'http://localhost:7001/editUserOrderList',
+                method: 'POST',
+                data: {
+                    kindof: 'subtract',
+                    openId: openId,
+                    goodsId: goodsId
+                },
+                success(res) {
+                    console.log(res);
+                }
+            })
+            this.setState({
+                orderLists: this.state.orderLists
+            })
         }
-        this.setState({
-            orderLists: this.state.orderLists
-        })
     }
 
     render() {
