@@ -141,13 +141,15 @@ export default class shopcart extends Component {
                                 <View style='font-size: 13px; padding-top: 8px; color: #b7b7b7'>{goodsDetail.subTitle}</View>
                             </View>
                             <View className='text-bottom'>
-                                <Text style='color:#FFAC46'>￥{goodsDetail.price}</Text>
-                                <Text style='color:#B7B7B7; margin-left: 10px; text-decoration: line-through;'>￥{goodsDetail.oldPrice}</Text>
                                 <View>
+                                    <Text style='color:#FFAC46'>￥{goodsDetail.price}</Text>
+                                    <Text style='color:#B7B7B7; margin-left: 10px; text-decoration: line-through;'>￥{goodsDetail.oldPrice}</Text>
+                                </View>
+                                <View className='edit-button'>
                                     <View onClick={this.addHandle} data-index='{{index}}'>
                                         <AtIcon value='add-circle' color='#E3E3E3'></AtIcon>
                                     </View>
-                                    <Text>
+                                    <Text style='width:40px;text-align:center;color:#FFAC46'>
                                         {goodsDetail.shoppingNum}
                                     </Text>
                                     <View onClick={this.subtractHandle} data-index='{{index}}'>
@@ -174,12 +176,19 @@ export default class shopcart extends Component {
                 </View>
                 <View className='shopping-goods'>
                     <View className='check-all'>
-                        <AtIcon value='check-circle' size='20' color={this.state.checkColor}></AtIcon>
-                        <Text className='check-text'>全选</Text>
+                        <AtIcon value='check-circle' size='20' color='#62BB73'></AtIcon>
+                        <Text className='check-text'>次日到达</Text>
                     </View>
                     <View>
                         {orderListsDetails}
                     </View>
+                </View>
+                <View>
+                    <View>
+                        <AtIcon value='check-circle' size='20' color={this.state.checkColor}></AtIcon>
+                        <Text className='check-text'>次日到达</Text>
+                    </View>
+                    <View></View>
                 </View>
             </View>
         )

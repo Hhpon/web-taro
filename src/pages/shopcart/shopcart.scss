@@ -30,6 +30,8 @@ page {
                 line-height: 80px;
                 font-size: 28px;
                 border-bottom: 1px solid #E3E3E3;
+                display: flex;
+                align-items: center;
                 .check-text {
                     padding-left: 20px;
                 }
@@ -40,7 +42,7 @@ page {
                 align-items: center;
                 border-bottom: 1px solid #E3E3E3;
                 .goodDetail{
-                    width: 95vw;
+                    width: 90%;
                     height: 25vh;
                     display: flex;
                     align-items: center;
@@ -59,8 +61,13 @@ page {
                             height: 100%;
                         }
                         .text-bottom{
-                            width: 100%;
                             font-size: 26px;
+                            display: flex;
+                            justify-content: space-between;
+                            .edit-button{
+                                display: flex;
+                                align-items: center;
+                            }
                         }
                     }
                 }
