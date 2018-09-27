@@ -175,7 +175,7 @@ export default class shopcart extends Component {
                     <View className='address-bottom'>华盛世纪新城正门</View>
                 </View>
                 <View className='shopping-goods'>
-                    <View className='check-all'>
+                    <View className='check'>
                         <AtIcon value='check-circle' size='20' color='#62BB73'></AtIcon>
                         <Text className='check-text'>次日到达</Text>
                     </View>
@@ -183,12 +183,18 @@ export default class shopcart extends Component {
                         {orderListsDetails}
                     </View>
                 </View>
-                <View>
-                    <View>
-                        <AtIcon value='check-circle' size='20' color={this.state.checkColor}></AtIcon>
-                        <Text className='check-text'>次日到达</Text>
+                <View className='pay-container'>
+                    <View className='check-all'>
+                        <AtIcon value='check-circle' color={this.state.checkColor} className='icon-class'></AtIcon>
+                        <Text className='all-text'>全选</Text>
                     </View>
-                    <View></View>
+                    <View className='pay-handle'>
+                        <View className='totle-amount'>
+                            总计:
+                            <Text className='amount-text'>￥10</Text>
+                        </View>
+                        <View className='pay-button'>结算</View>
+                    </View>
                 </View>
             </View>
         )

@@ -25,7 +25,7 @@ page {
             margin-top: 20px;
             background-color: #FFFFFF;
             padding: 0px 30px;
-            .check-all {
+            .check {
                 height: 80px;
                 line-height: 80px;
                 font-size: 28px;
@@ -41,7 +41,7 @@ page {
                 justify-content: space-between;
                 align-items: center;
                 border-bottom: 1px solid #E3E3E3;
-                .goodDetail{
+                .goodDetail {
                     width: 90%;
                     height: 25vh;
                     display: flex;
@@ -50,26 +50,67 @@ page {
                         height: 25vw;
                         width: 25vw;
                     }
-                    .good-text{
+                    .good-text {
                         height: 18vh;
                         width: 70vw;
                         padding-left: 20px;
                         font-size: 28px;
                         display: flex;
                         flex-direction: column;
-                        .text-top{
+                        .text-top {
                             height: 100%;
                         }
-                        .text-bottom{
+                        .text-bottom {
                             font-size: 26px;
                             display: flex;
                             justify-content: space-between;
-                            .edit-button{
+                            .edit-button {
                                 display: flex;
                                 align-items: center;
                             }
                         }
                     }
+                }
+            }
+        }
+        .pay-container {
+            height: 100px;
+            width: 100%;
+            line-height: 100px;
+            font-size: 28px;
+            position: fixed;
+            bottom: 0px;
+            border: 1px solid #E3E3E3;
+            display: flex;
+            justify-content: space-between;
+            background-color: #FFFFFF;
+            .check-all {
+                padding: 0px 30px;
+                .icon-class {
+                    height: 100px;
+                    line-height: 90px
+                }
+                .all-text {
+                    padding: 0px 15px;
+                }
+            }
+            .pay-handle{
+                width: 55%;
+                display: flex;
+                .totle-amount{
+                    width: 40%;
+                    .amount-text{
+                        color: #FFAC46;
+                    }
+                }
+                .pay-button{
+                    width: 60%;
+                    padding: 0px 8px;
+                    text-align: center;
+                    background-color: #61BA76;
+                    font-size: 32px;
+                    color: #FFFFFF;
+                    letter-spacing: 10px;
                 }
             }
         }
