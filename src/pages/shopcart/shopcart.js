@@ -16,10 +16,12 @@ export default class shopcart extends Component {
             checkColor: '',
             goodcheckColor: '',
             openId: '',
-            orderLists: []
+            orderLists: [],
+            totalPrices: 0
         }
     }
 
+    // 页面刚刚加载出来的时候获取本地内存中的openid
     componentWillMount() {
         const openId = Taro.getStorageSync('openid');
         this.setState({
@@ -27,6 +29,7 @@ export default class shopcart extends Component {
         })
     }
 
+    //生命周期 每当这页显示的时候要去后台请求数据库
     componentDidShow() {
         Taro.request({
             url: 'http://localhost:7001/getorderLists',
@@ -42,10 +45,12 @@ export default class shopcart extends Component {
         })
     }
 
+    //点击选择商品的对号
     goodcheckHandle() {
         console.log('点击全选');
     }
 
+    //增加商品购买数量
     addHandle(e) {
         const index = e.currentTarget.dataset.index;
         let orderLists = this.state.orderLists[index];
@@ -71,6 +76,7 @@ export default class shopcart extends Component {
         })
     }
 
+    //减少商品购买数量
     subtractHandle(e) {
         const index = e.currentTarget.dataset.index;
         let orderLists = this.state.orderLists[index];
@@ -191,7 +197,7 @@ export default class shopcart extends Component {
                     <View className='pay-handle'>
                         <View className='totle-amount'>
                             总计:
-                            <Text className='amount-text'>￥10</Text>
+                            <Text className='amount-text'>￥{this.state.totalPrices}</Text>
                         </View>
                         <View className='pay-button'>结算</View>
                     </View>
