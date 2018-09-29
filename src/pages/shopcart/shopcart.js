@@ -14,7 +14,6 @@ export default class shopcart extends Component {
         super();
         this.state = {
             checkColor: '',
-            goodcheckColor: '',
             openId: '',
             orderLists: [],
             totalPrices: 0
@@ -43,11 +42,6 @@ export default class shopcart extends Component {
                 orderLists: res.data
             })
         })
-    }
-
-    //点击选择商品的对号
-    goodcheckHandle() {
-        console.log('点击全选');
     }
 
     //增加商品购买数量
@@ -131,13 +125,37 @@ export default class shopcart extends Component {
         }
     }
 
+    //点击选择商品的对号
+    goodcheckHandle(e) {
+        const index = e.currentTarget.dataset.index;
+        let orderLists = this.state.orderLists[index];
+        orderLists.goodcheckColor = '#61BA76';
+        let totalPrices = this.state.totalPrices + parseInt(orderLists.price);
+        this.setState({
+            orderLists: this.state.orderLists,
+            totalPrices: totalPrices
+        })
+        let statusNum = 0;
+        this.state.orderLists.map((goodsDetail) => {
+            if (!!goodsDetail.goodcheckColor) {
+                console.log('这个被点击了');
+                statusNum += 1;
+            }
+        })
+        if (statusNum === this.state.orderLists.length) {
+            this.setState({
+                checkColor: '#61BA76'
+            })
+        }
+    }
+
     render() {
 
         const orderListsDetails = this.state.orderLists.map((goodsDetail) => {
             return (
                 <View className='orderListsDetails'>
-                    <View onClick={this.goodcheckHandle}>
-                        <AtIcon value='check-circle' size='20' color={this.state.goodcheckColor}></AtIcon>
+                    <View onClick={this.goodcheckHandle} data-index='{{index}}'>
+                        <AtIcon value='check-circle' size='20' color={goodsDetail.goodcheckColor}></AtIcon>
                     </View>
                     <View className='goodDetail'>
                         <Image className='good-image' mode='aspectFill' src={goodsDetail.titleUrl}></Image>
@@ -202,6 +220,7 @@ export default class shopcart extends Component {
                         <View className='pay-button'>结算</View>
                     </View>
                 </View>
+                <View style='height:50px'></View>
             </View>
         )
     }
