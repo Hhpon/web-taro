@@ -129,24 +129,65 @@ export default class shopcart extends Component {
     goodcheckHandle(e) {
         const index = e.currentTarget.dataset.index;
         let orderLists = this.state.orderLists[index];
-        orderLists.goodcheckColor = '#61BA76';
-        let totalPrices = this.state.totalPrices + parseInt(orderLists.price);
-        this.setState({
-            orderLists: this.state.orderLists,
-            totalPrices: totalPrices
-        })
-        let statusNum = 0;
-        this.state.orderLists.map((goodsDetail) => {
-            if (!!goodsDetail.goodcheckColor) {
-                console.log('这个被点击了');
-                statusNum += 1;
-            }
-        })
-        if (statusNum === this.state.orderLists.length) {
+        if (orderLists.goodcheckColor) {
+            console.log('绿色的');
+            orderLists.goodcheckColor = '';
+            let totalPrices = this.state.totalPrices - parseInt(orderLists.price);
             this.setState({
-                checkColor: '#61BA76'
+                orderLists: this.state.orderLists,
+                totalPrices: totalPrices
+            })
+            if (this.state.checkColor) {
+                this.setState({
+                    checkColor: '',
+                })
+            }
+        } else {
+            orderLists.goodcheckColor = '#61BA76';
+            let totalPrices = this.state.totalPrices + parseInt(orderLists.price);
+            this.setState({
+                orderLists: this.state.orderLists,
+                totalPrices: totalPrices
+            })
+            let statusNum = 0;
+            this.state.orderLists.map((goodsDetail) => {
+                if (!!goodsDetail.goodcheckColor) {
+                    console.log('这个被点击了');
+                    statusNum += 1;
+                }
+            })
+            if (statusNum === this.state.orderLists.length) {
+                this.setState({
+                    checkColor: '#61BA76'
+                })
+            }
+        }
+    }
+
+    //点击全选的方法
+    checkallHandle() {
+        if (this.state.checkColor) {
+            this.state.orderLists.map((goodsDetail) => {
+                goodsDetail.goodcheckColor = ''
+            })
+            this.setState({
+                checkColor: '',
+                orderLists: this.state.orderLists,
+                totalPrices: 0
+            })
+        } else {
+            let totalPrices = this.state.totalPrices;
+            this.state.orderLists.map((goodsDetail) => {
+                goodsDetail.goodcheckColor = '#61BA76'
+                totalPrices += parseInt(goodsDetail.price);
+            })
+            this.setState({
+                checkColor: '#61BA76',
+                orderLists: this.state.orderLists,
+                totalPrices: totalPrices
             })
         }
+
     }
 
     render() {
@@ -208,7 +249,7 @@ export default class shopcart extends Component {
                     </View>
                 </View>
                 <View className='pay-container'>
-                    <View className='check-all'>
+                    <View className='check-all' onClick={this.checkallHandle}>
                         <AtIcon value='check-circle' color={this.state.checkColor} className='icon-class'></AtIcon>
                         <Text className='all-text'>全选</Text>
                     </View>
