@@ -5,7 +5,7 @@ import './mine.scss'
 
 export default class mine extends Component {
     config = {
-        navigationBarTitleText: ''
+        navigationBarBackgroundColor: '#5FC768'
     }
 
     constructor() {
