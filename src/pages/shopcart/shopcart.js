@@ -1,5 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Button, Image, Text } from '@tarojs/components'
+import { View, Image, Text } from '@tarojs/components'
 import { AtIcon } from 'taro-ui'
 
 import './shopcart.scss'

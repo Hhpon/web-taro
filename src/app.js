@@ -7,6 +7,7 @@ import './icon.scss'
 class App extends Component {
   config = {
     pages: [
+      'pages/mine/mine',
       'pages/shopcart/shopcart',
       'pages/index/index',
       'pages/goodsDetails/goodsDetails',
@@ -36,7 +37,7 @@ class App extends Component {
           selectedIconPath: './asset/tabbar/shopd.png'
         },
         {
-          pagePath: 'pages/index/index',
+          pagePath: 'pages/mine/mine',
           text: '我的',
           iconPath: './asset/tabbar/mine.png',
           selectedIconPath: './asset/tabbar/mined.png'
