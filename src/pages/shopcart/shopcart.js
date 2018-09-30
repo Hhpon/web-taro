@@ -52,6 +52,32 @@ export default class shopcart extends Component {
         let goodsId = orderLists.goodsId;
         orderLists.shoppingNum += 1;
 
+        if (!orderLists.goodcheckColor) {
+            orderLists.goodcheckColor = '#61BA76';
+            let totalPrices = this.state.totalPrices + orderLists.price * orderLists.shoppingNum;
+            this.setState({
+                orderLists: this.state.orderLists,
+                totalPrices: totalPrices
+            })
+            let statusNum = 0;
+            this.state.orderLists.map((goodsDetail) => {
+                if (!!goodsDetail.goodcheckColor) {
+                    console.log('这个被点击了');
+                    statusNum += 1;
+                }
+            })
+            if (statusNum === this.state.orderLists.length) {
+                this.setState({
+                    checkColor: '#61BA76'
+                })
+            }
+        } else {
+            let totalPrices = this.state.totalPrices + orderLists.price;
+            this.setState({
+                totalPrices: totalPrices
+            })
+        }
+
         Taro.request({
             url: 'http://localhost:7001/editUserOrderList',
             method: 'POST',
@@ -64,7 +90,6 @@ export default class shopcart extends Component {
                 console.log(res);
             }
         })
-
         this.setState({
             orderLists: this.state.orderLists
         })
@@ -130,9 +155,8 @@ export default class shopcart extends Component {
         const index = e.currentTarget.dataset.index;
         let orderLists = this.state.orderLists[index];
         if (orderLists.goodcheckColor) {
-            console.log('绿色的');
             orderLists.goodcheckColor = '';
-            let totalPrices = this.state.totalPrices - parseInt(orderLists.price);
+            let totalPrices = this.state.totalPrices - orderLists.price;
             this.setState({
                 orderLists: this.state.orderLists,
                 totalPrices: totalPrices
@@ -144,7 +168,8 @@ export default class shopcart extends Component {
             }
         } else {
             orderLists.goodcheckColor = '#61BA76';
-            let totalPrices = this.state.totalPrices + parseInt(orderLists.price);
+            console.log(typeof (orderLists.price));
+            let totalPrices = this.state.totalPrices + orderLists.price;
             this.setState({
                 orderLists: this.state.orderLists,
                 totalPrices: totalPrices
@@ -179,7 +204,7 @@ export default class shopcart extends Component {
             let totalPrices = this.state.totalPrices;
             this.state.orderLists.map((goodsDetail) => {
                 goodsDetail.goodcheckColor = '#61BA76'
-                totalPrices += parseInt(goodsDetail.price);
+                totalPrices += goodsDetail.price;
             })
             this.setState({
                 checkColor: '#61BA76',
