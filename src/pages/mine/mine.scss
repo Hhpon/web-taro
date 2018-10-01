@@ -1,0 +1,53 @@
+.message-container {
+    height: 470px;
+    position: relative;
+    .image-container {
+        height: 350px;
+        background: #5FC768;
+        .avatar-con {
+            width: 155px;
+            height: 155px;
+            border-radius: 50%;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba($color: #fff, $alpha: 0.3);
+            .avatar {
+                border-radius: 50%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                overflow: hidden;
+            }
+        }
+        .name-con {
+            color: #FFF;
+            font-size: 26px;
+            text-align: center;
+            padding-top: 10px;
+        }
+    }
+    .mine-order {
+        height: 240px;
+        width: 90%;
+        background-color: #FFF;
+        border-radius: 10px;
+        box-shadow: 8px 2px 20px 2px rgb(223, 238, 225);
+        position: absolute;
+        bottom: 0px;
+        .order-top {
+            height: 40%;
+            padding: 0 20px;
+            border-bottom: 1px solid #E3E3E3;
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            .ordertop-right {
+                color: #868281;
+                font-size: 24px;
+            }
+        }
+    }
+}
