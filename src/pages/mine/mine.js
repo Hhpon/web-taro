@@ -52,7 +52,12 @@ export default class mine extends Component {
                                 <AtIcon value='chevron-right' size='15' color='#868281' className='right-icon'></AtIcon>
                             </View>
                         </View>
-                        <View></View>
+                        <View>
+                            <View></View>
+                            <View></View>
+                            <View></View>
+                            <View></View>
+                        </View>
                     </View>
                     <View></View>
                 </View>
