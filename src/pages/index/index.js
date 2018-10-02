@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image, Swiper, Navigator } from '@tarojs/components'
-import { AtTabBar } from 'taro-ui'
+import { AtIcon } from 'taro-ui'
 
 import './index.scss'
 
@@ -209,10 +209,18 @@ export default class Index extends Component {
           <Image className='goods-image' src={good.titleUrl}></Image>
           <View className='goods-message'>
             <View className='message-title'>
-              <View>{good.name}</View>
-              <View>{good.subName}</View>
+              <View className='title-top'>{good.name}</View>
+              <View className='title-bottom'>{good.subTitle}</View>
             </View>
-            <View></View>
+            <View className='message-price'>
+              <View className='price-left'>
+                <Text className='price'>￥{good.price}</Text>
+                <Text className='oldprice'>￥{good.oldPrice}</Text>
+              </View>
+              <View data-goodDetail={good} onClick={this.shopButton}>
+                <AtIcon prefixClass='icon' value='gouwuche' size='34' color='#63BA74'></AtIcon>
+              </View>
+            </View>
           </View>
         </View>
       )
