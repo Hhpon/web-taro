@@ -7,9 +7,9 @@ import './icon.scss'
 class App extends Component {
   config = {
     pages: [
+      'pages/index/index',
       'pages/mine/mine',
       'pages/shopcart/shopcart',
-      'pages/index/index',
       'pages/goodsDetails/goodsDetails',
     ],
     window: {

@@ -28,35 +28,42 @@
         display: block;
     }
     .goods-container {
-        width: 100%;
-        justify-content: space-between;
+        padding: 0px 10px 40px 20px;
         display: flex;
-        font-size: 30px;
-        .goods-title {
-            overflow: hidden;
-            line-height: 60px;
-            text-align: center;
-            height: 60px;
-            text-overflow: ellipsis;
+        .goods-image {
+            width: 30vw;
+            height: 30vw;
         }
-        .goods-button {
-            width: 120px;
-            height: 60px;
-            line-height: 60px;
-            text-align: center;
-            background-color: #F1521B;
-            color: #FFFDFC;
-            border-radius: 10px;
-            letter-spacing: 4px;
-            margin-right: 15px;
-            flex: 0 0 120px;
+        .goods-message {
+            .message-title {
+                font-size: 26px;
+            }
         }
-    }
-    .price-container {
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-    }
+    } // .goods-container {
+    //     width: 100%;
+    //     justify-content: space-between;
+    //     display: flex;
+    //     font-size: 30px;
+    //     .goods-title {
+    //         overflow: hidden;
+    //         line-height: 60px;
+    //         text-align: center;
+    //         height: 60px;
+    //         text-overflow: ellipsis;
+    //     }
+    //     .goods-button {
+    //         width: 120px;
+    //         height: 60px;
+    //         line-height: 60px;
+    //         text-align: center;
+    //         background-color: #F1521B;
+    //         color: #FFFDFC;
+    //         border-radius: 10px;
+    //         letter-spacing: 4px;
+    //         margin-right: 15px;
+    //         flex: 0 0 120px;
+    //     }
+    // }
     .getUserinfo-button {
         width: 100vw;
         height: 100vh;

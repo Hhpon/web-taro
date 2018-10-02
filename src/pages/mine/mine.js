@@ -12,7 +12,7 @@ export default class mine extends Component {
     constructor() {
         super();
         this.state = {
-            userInfo: {}
+            userInfo: {},
         }
     }
 
@@ -48,20 +48,33 @@ export default class mine extends Component {
                         <View className='order-top'>
                             <Text>我的订单</Text>
                             <View className='ordertop-right'>
-                                <Text>查看全部订单 &nbsp;</Text>
-                                <AtIcon value='chevron-right' size='15' color='#868281' className='right-icon'></AtIcon>
+                                <Text>查看全部订单</Text>
+                                <AtIcon value='chevron-right' size='15' color='#868281'></AtIcon>
                             </View>
                         </View>
-                        <View>
-                            <View></View>
-                            <View></View>
-                            <View></View>
-                            <View></View>
+                        <View className='order-bottom'>
+                            <View className='order-icon'>
+                                <AtIcon prefixClass='icon' value='daifukuan' color='#5FC768' size='24'></AtIcon>
+                                <Text>待付款</Text>
+                            </View>
+                            <View className='order-icon'>
+                                <AtIcon prefixClass='icon' value='daifahuo' color='#5FC768' size='24'></AtIcon>
+                                <Text>待发货</Text>
+                            </View>
+                            <View className='order-icon'>
+                                <AtIcon prefixClass='icon' value='daishouhuo' color='#5FC768' size='24'></AtIcon>
+                                <Text>待收货</Text>
+                            </View>
+                            <View className='order-icon'>
+                                <AtIcon prefixClass='icon' value='yishouhuo' color='#5FC768' size='24'></AtIcon>
+                                <Text>已完成</Text>
+                            </View>
                         </View>
                     </View>
-                    <View></View>
                 </View>
-                <View></View>
+                <View>
+                    
+                </View>
                 <View></View>
             </View>
         )

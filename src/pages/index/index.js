@@ -84,6 +84,8 @@ export default class Index extends Component {
 
       const data = res.data.reverse(); // 把返回的数组调换顺序
 
+      console.log(data);
+
       const sliderGoods = [];
       data.forEach(element => {
         if (element.sliderView) {
@@ -201,16 +203,16 @@ export default class Index extends Component {
       )
     })
 
-    const goodsDebli = this.state.Goods.map((good) => {
+    const goodsDetails = this.state.Goods.map((good) => {
       return (
-        <View>
-          <Image mode='widthFix' style='width:100%' src={good.titleUrl}></Image>
-          <View className='goods-container'>
-            <View className='goods-title'>{good.name}</View>
-            <View className='goods-button' data-goodDetail={good} onClick={this.shopButton}>去抢购</View>
-          </View>
-          <View className='price-container'>
-            <View className='goods-price'>{good.price}</View>
+        <View className='goods-container'>
+          <Image className='goods-image' src={good.titleUrl}></Image>
+          <View className='goods-message'>
+            <View className='message-title'>
+              <View>{good.name}</View>
+              <View>{good.subName}</View>
+            </View>
+            <View></View>
           </View>
         </View>
       )
@@ -227,9 +229,11 @@ export default class Index extends Component {
         <Swiper autoplay indicator-dots circular className='swiper' style='height:{{imgheights}}px'>
           {imgList}
         </Swiper>
+
         <View style='height:5px'></View>
+
         <View>
-          {goodsDebli}
+          {goodsDetails}
         </View>
 
         {
