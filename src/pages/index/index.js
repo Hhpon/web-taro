@@ -1,5 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text, Image, Swiper, Navigator } from '@tarojs/components'
+import { View, Text, Image, Swiper } from '@tarojs/components'
 import { AtIcon } from 'taro-ui'
 
 import './index.scss'
@@ -63,8 +63,8 @@ export default class Index extends Component {
   }
 
   // 跳转到商品详情页
-  goodsActive(event) {
-    const goodId = event.currentTarget.dataset.goodid;
+  goodsActive(e) {
+    const goodId = e.currentTarget.dataset.goodid;
     Taro.navigateTo({
       url: '../goodsDetails/goodsDetails?goodid=' + goodId
     })
@@ -151,6 +151,7 @@ export default class Index extends Component {
   }
 
   shopButton(e) {
+    e.stopPropagation();
     let goodDetail = e.currentTarget.dataset.gooddetail;
     let openId = this.state.openId;
     Taro.request({
@@ -205,7 +206,7 @@ export default class Index extends Component {
 
     const goodsDetails = this.state.Goods.map((good) => {
       return (
-        <View className='goods-container'>
+        <View className='goods-container' onClick={this.goodsActive} data-goodid='{{good.goodsId}}'>
           <Image className='goods-image' src={good.titleUrl}></Image>
           <View className='goods-message'>
             <View className='message-title'>

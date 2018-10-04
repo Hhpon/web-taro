@@ -72,9 +72,7 @@ export default class mine extends Component {
                         </View>
                     </View>
                 </View>
-                <View>
-                    
-                </View>
+                <View></View>
                 <View></View>
             </View>
         )

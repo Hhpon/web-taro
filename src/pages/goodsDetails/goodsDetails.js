@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Button } from '@tarojs/components'
-import { AtFloatLayout, AtInputNumber } from 'taro-ui'
+import { View, Button, Image } from '@tarojs/components'
+import { AtFloatLayout, AtInputNumber, AtIcon } from 'taro-ui'
 
 import './goodsDetails.scss'
 
@@ -61,9 +61,45 @@ export default class goodsDetails extends Component {
 
 
     render() {
+        const goodDetails = this.state.goodDetails;
+        const details = goodDetails.detailsUrl.map(detailUrl => {
+            return (
+                <Image mode='widthFix' style='width:100%' src={detailUrl}></Image>
+            )
+        })
         return (
             <View>
-                <View>123</View>
+                <View>
+                    <View>
+                        <Image mode='widthFix' style='width:100%' src={goodDetails.titleUrl}></Image>
+                    </View>
+                    <View className='price-container'>
+                        <View className='price-left'>
+                            <Text className='price'>￥{goodDetails.price}</Text>
+                            <Text className='oldprice'>￥{goodDetails.oldPrice}</Text>
+                        </View>
+                        <View className='price-right'>
+                            已抢{goodDetails.saleAmount}件
+                        </View>
+                    </View>
+                    <View className='title-container'>
+                        <View className='title-left'>
+                            <View className='titleleft-top'>{goodDetails.name}</View>
+                            <View className='titleleft-bottom'>{goodDetails.subTitle}</View>
+                        </View>
+                        <View className='title-right'>
+                            <AtIcon prefixClass='icon' value='fenxiang'></AtIcon>
+                            <Text style='font-size:12px;'>分享</Text>
+                        </View>
+                    </View>
+                    <View>
+                        <View style='padding:15px;font-size:20px;font-weight:blod'>商品详情</View>
+                        <View>
+                            {details}
+                        </View>
+                        <View style='height:50px;'></View>
+                    </View>
+                </View>
                 <AtFloatLayout
                     isOpened={this.state.isOpened}
                     title='请输入购买量'
