@@ -98,7 +98,6 @@ export default class goodsDetails extends Component {
                             {details}
                         </View>
                         <View style='height:50px;'></View>
-                        
                     </View>
                 </View>
                 <AtFloatLayout
