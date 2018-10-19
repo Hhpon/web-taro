@@ -32,17 +32,17 @@
     box-sizing: border-box;
     display: flex;
     justify-content: space-between;
-    .title-left{
-        .titleleft-top{
+    .title-left {
+        .titleleft-top {
             font-size: 30px;
         }
-        .titleleft-bottom{
+        .titleleft-bottom {
             font-size: 24px;
             padding-top: 20px;
             color: #B7B7B7;
         }
     }
-    .title-right{
+    .title-right {
         display: flex;
         color: #B7B7B7;
         flex-direction: column;
@@ -52,8 +52,6 @@
 .details-tab {
     height: 100px;
     width: 100%;
-    line-height: 100px;
-    text-align: center;
     position: fixed;
     bottom: 0;
     display: flex;
@@ -67,19 +65,24 @@
         display: flex;
         font-size: 26px;
         justify-content: space-around;
-        font-size: 24px;
-        .button-left{
+        font-size: 20px;
+        .button-left {
             display: flex;
             flex-direction: column;
             justify-content: center;
+            align-items: center;
         }
     }
     .shop-button {
         width: 100%;
         background-color: #63BA76;
+        line-height: 100px;
+        text-align: center;
     }
     .sell-button {
         width: 100%;
         background-color: #FDA625;
+        line-height: 100px;
+        text-align: center;
     }
 }
