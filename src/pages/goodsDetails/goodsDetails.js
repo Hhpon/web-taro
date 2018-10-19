@@ -150,6 +150,7 @@ export default class goodsDetails extends Component {
                         value={this.state.sellNum}
                         onChange={this.sellNumChange}
                     />
+                    
                     <Button onClick={this.sellNowButton}>立即购买</Button>
                 </AtFloatLayout>
                 <View className='details-tab'>
