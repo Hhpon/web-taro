@@ -59,13 +59,20 @@
     display: flex;
     justify-content: space-around;
     color: #FCF6EF;
-    font-family: 'Courier New', Courier, monospace;
+    font-size: 28px;
     .tab-button {
         width: 100%;
-        background-color: blue;
+        background-color: #FFFFFF;
+        color: #707070;
         display: flex;
         font-size: 26px;
         justify-content: space-around;
+        font-size: 24px;
+        .button-left{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
     }
     .shop-button {
         width: 100%;

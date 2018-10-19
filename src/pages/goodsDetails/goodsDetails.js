@@ -114,8 +114,14 @@ export default class goodsDetails extends Component {
                 </AtFloatLayout>
                 <View className='details-tab'>
                     <View className='tab-button'>
-                        <View>首页</View>
-                        <View>购物车</View>
+                        <View className='button-left'>
+                            <AtIcon prefixClass='icon' value='zhuye-copy' color='#707070' size='25'></AtIcon>
+                            <Text>首页</Text>
+                        </View>
+                        <View className='button-left'>
+                            <AtIcon prefixClass='icon' value='hongjiuchengicongouwuche' color='#707070' size='25'></AtIcon>
+                            <Text>购物车</Text>
+                        </View>
                     </View>
                     <View className='shop-button'>加入购物车</View>
                     <View onClick={this.sellButton} className='sell-button'>立即购买</View>
