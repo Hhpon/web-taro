@@ -34,16 +34,12 @@ export default class goodsDetails extends Component {
         })
     }
 
-    sellButton() {
-        this.setState({
-            isOpened: true
-        })
-    }
     sellNumChange(value) {
         this.setState({
             sellNum: value
         })
     }
+
     sellNowButton(e) {
         console.log(this.state.sellNum);
         console.log(this.state.goodDetails);
@@ -56,6 +52,50 @@ export default class goodsDetails extends Component {
             }
         }).then(res => {
             console.log(res);
+        })
+    }
+
+    // 加入购物车按钮
+    shopButton() {
+        let goodDetail = this.state.goodDetails;
+        const openId = Taro.getStorageSync('openid');
+        Taro.request({
+            url: 'http://localhost:7001/shoppingCart',
+            method: 'POST',
+            data: {
+                goodDetail: goodDetail,
+                openId: openId
+            },
+            success(res) {
+                console.log(res);
+                if (res.data === 100) {
+                    Taro.showToast({
+                        title: '商品已经添加！',
+                        icon: 'success',
+                        duration: 1000
+                    })
+                } else {
+                    Taro.showToast({
+                        title: '添加成功！',
+                        icon: 'success',
+                        duration: 1000
+                    })
+                }
+            },
+            fail(res) {
+                Taro.showToast({
+                    title: '请稍后重试！',
+                    icon: 'none',
+                    duration: 1000
+                })
+            }
+        })
+    }
+
+    // 立即购买按钮
+    sellButton() {
+        this.setState({
+            isOpened: true
         })
     }
 
@@ -123,7 +163,7 @@ export default class goodsDetails extends Component {
                             <Text>购物车</Text>
                         </View>
                     </View>
-                    <View className='shop-button'>加入购物车</View>
+                    <View onClick={this.shopButton} className='shop-button'>加入购物车</View>
                     <View onClick={this.sellButton} className='sell-button'>立即购买</View>
                 </View>
 
