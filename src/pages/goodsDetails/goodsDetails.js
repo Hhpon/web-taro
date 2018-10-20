@@ -34,27 +34,6 @@ export default class goodsDetails extends Component {
         })
     }
 
-    sellNumChange(value) {
-        this.setState({
-            sellNum: value
-        })
-    }
-
-    sellNowButton(e) {
-        console.log(this.state.sellNum);
-        console.log(this.state.goodDetails);
-        Taro.request({
-            url: 'http://localhost:7001/sellHandle',
-            method: 'POST',
-            data: {
-                sellNum: this.state.sellNum,
-                goodDetails: this.state.goodDetails
-            }
-        }).then(res => {
-            console.log(res);
-        })
-    }
-
     // 加入购物车按钮
     shopButton() {
         let goodDetail = this.state.goodDetails;
@@ -92,16 +71,62 @@ export default class goodsDetails extends Component {
         })
     }
 
-    // 立即购买按钮
+    // 立即购买按钮(显示浮动弹窗)
     sellButton() {
         this.setState({
             isOpened: true
         })
     }
 
+    // 首页按钮
+    hometabButton() {
+        console.log('首页');
+        Taro.switchTab({
+            url: '/pages/index/index'
+        })
+    }
+
+    // 购物车按钮
+    carttabButton() {
+        console.log('购物车');
+        Taro.switchTab({
+            url: '/pages/shopcart/shopcart'
+        })
+    }
+
+    // 点击减号的方法
+    subtractHandle() {
+        if (this.state.sellNum > 1) {
+            this.setState({
+                sellNum: this.state.sellNum - 1
+            })
+        }
+    }
+
+    //点击加号的方法
+    addHandle() {
+        this.setState({
+            sellNum: this.state.sellNum + 1
+        })
+    }
+
+    // 立即购买按钮(实际动作而非弹窗)
+    sellNowButton() {
+        Taro.request({
+            url: 'http://localhost:7001/sellHandle',
+            method: 'POST',
+            data: {
+                sellNum: this.state.sellNum,
+                goodDetails: this.state.goodDetails
+            }
+        }).then(res => {
+            console.log(res);
+        })
+    }
 
     render() {
         const goodDetails = this.state.goodDetails;
+        const isOpened = this.state.isOpened;
         const details = goodDetails.detailsUrl.map(detailUrl => {
             return (
                 <Image mode='widthFix' style='width:100%' src={detailUrl}></Image>
@@ -141,25 +166,13 @@ export default class goodsDetails extends Component {
                         </View>
                     </View>
                 </View>
-                <AtFloatLayout
-                    isOpened={this.state.isOpened}
-                    title='请输入购买量'
-                    onClose={this.handleClose} >
-                    <AtInputNumber
-                        min={1}
-                        value={this.state.sellNum}
-                        onChange={this.sellNumChange}
-                    />
-                    
-                    <Button onClick={this.sellNowButton}>立即购买</Button>
-                </AtFloatLayout>
                 <View className='details-tab'>
                     <View className='tab-button'>
-                        <View className='button-left'>
+                        <View className='button-left' onClick={this.hometabButton}>
                             <AtIcon prefixClass='icon' value='zhuye-copy' color='#707070' size='25'></AtIcon>
                             <Text>首页</Text>
                         </View>
-                        <View className='button-left'>
+                        <View className='button-left' onClick={this.carttabButton}>
                             <AtIcon prefixClass='icon' value='hongjiuchengicongouwuche' color='#707070' size='25'></AtIcon>
                             <Text>购物车</Text>
                         </View>
@@ -167,7 +180,68 @@ export default class goodsDetails extends Component {
                     <View onClick={this.shopButton} className='shop-button'>加入购物车</View>
                     <View onClick={this.sellButton} className='sell-button'>立即购买</View>
                 </View>
-
+                {/* <AtFloatLayout
+                    isOpened={this.state.isOpened}
+                    title='请选择'
+                    onClose={this.handleClose}
+                    className='floatlayout-container'>
+                    <View className='floatlayout-info'>
+                        <View>
+                            <Image mode='widthFix' src={goodDetails.titleUrl} style='width: 25vw;'></Image>
+                        </View>
+                        <View className='floatlayout-right'>
+                            <View>{goodDetails.name}</View>
+                            <View className='floatlayout-price'>
+                                <Text style='color:#FFAC46;'>{goodDetails.price}</Text>
+                                <Text style='color:#B7B7B7;'>{goodDetails.amount}</Text>
+                            </View>
+                        </View>
+                    </View>
+                    <AtInputNumber
+                        min={1}
+                        value={this.state.sellNum}
+                        onChange={this.sellNumChange}
+                    />
+                </AtFloatLayout> */}
+                {
+                    isOpened &&
+                    <View className='floatlayout-container'>
+                        <View className='floatlayout-info'>
+                            <View className='floatlayout-header'>
+                                <AtIcon value='close' size='15' color='#B7B7B7'></AtIcon>
+                            </View>
+                            <View className='floatlayout-mes'>
+                                <View>
+                                    <Image mode='widthFix' src={goodDetails.titleUrl} style='width: 25vw;'></Image>
+                                </View>
+                                <View className='floatlayout-right'>
+                                    <View>{goodDetails.name}</View>
+                                    <View className='floatlayout-price'>
+                                        <Text style='color:#FFAC46;'>￥{goodDetails.price}</Text>
+                                        <Text style='color:#B7B7B7;'>库存{goodDetails.amount}件</Text>
+                                    </View>
+                                </View>
+                            </View>
+                            <View className='floatlayout-select'>
+                                <View className='select-text'>规格</View>
+                                <View className='select-specification'>1份</View>
+                                <View className='select-text'>数量</View>
+                                <View className='select-num'>
+                                    <View onClick={this.subtractHandle}>
+                                        <AtIcon value='subtract-circle' color='#E3E3E3'></AtIcon>
+                                    </View>
+                                    <Text style='width:40px;text-align:center;color:#FFAC46'>
+                                        {this.state.sellNum}
+                                    </Text>
+                                    <View onClick={this.addHandle}>
+                                        <AtIcon value='add-circle' color='#E3E3E3'></AtIcon>
+                                    </View>
+                                </View>
+                            </View>
+                            <View onClick={this.sellNowButton} className='floatlayout-sellhandle'>立即购买</View>
+                        </View>
+                    </View>
+                }
             </View>
         )
     }

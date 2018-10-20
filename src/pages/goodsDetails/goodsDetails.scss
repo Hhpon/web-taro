@@ -86,3 +86,93 @@
         text-align: center;
     }
 }
+
+.floatlayout-container {
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(0, 0, 0, 0.4);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    overflow: auto;
+    font-size: 28px;
+    .floatlayout-info {
+        height: 60vh;
+        width: 100%;
+        border-radius: 20px 20px 0 0;
+        padding: 0 20px;
+        box-sizing: border-box;
+        background-color: #FFFFFF;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        .floatlayout-header {
+            padding-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+        }
+        .floatlayout-mes {
+            display: flex;
+            padding: 20px 0;
+            border-bottom: 1px solid #B7B7B7;
+            .floatlayout-right {
+                width: 100%;
+                padding: 30px 10px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                .floatlayout-price {
+                    display: flex;
+                    justify-content: space-between;
+                    font-size: 26px;
+                }
+            }
+        }
+        .floatlayout-select {
+            color: #787878;
+            .select-text{
+                padding: 20px 0;
+            }
+            .select-specification{
+                height: 50px;
+                line-height: 50px;
+                width: 150px;
+                font-size: 24px;
+                text-align: center;
+                border: 1px solid #63BA76;
+                border-radius: 50px;
+                color: #63BA76;
+            }
+            .select-num{
+                display: flex;
+            }
+        }
+        .floatlayout-sellhandle{
+            height: 100px;
+            line-height: 100px;
+            width: 100%;
+            text-align: center;
+            background-color: #FDA625;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            color: #FFFFFF;
+        }
+    } 
+    // .floatlayout-info {
+    //     display: flex;
+    //     font-size: 28px;
+    //     .floatlayout-right {
+    //         width: 100%;
+    //         display: flex;
+    //         flex-direction: column;
+    //         justify-content: space-between;
+    //         .floatlayout-price {
+    //             display: flex;
+    //             justify-content: space-between;
+    //             font-size: 24px;
+    //         }
+    //     }
+    // }
+}

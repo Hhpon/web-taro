@@ -289,7 +289,6 @@ export default class shopcart extends Component {
                                     <Text style='color:#B7B7B7; margin-left: 10px; text-decoration: line-through;'>￥{goodsDetail.oldPrice}</Text>
                                 </View>
                                 <View className='edit-button'>
-
                                     <View onClick={this.subtractHandle} data-index='{{index}}'>
                                         <AtIcon value='subtract-circle' color='#E3E3E3'></AtIcon>
                                     </View>
