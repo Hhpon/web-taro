@@ -124,6 +124,13 @@ export default class goodsDetails extends Component {
         })
     }
 
+    // 关闭弹窗按钮
+    closeButton() {
+        this.setState({
+            isOpened: false
+        })
+    }
+
     render() {
         const goodDetails = this.state.goodDetails;
         const isOpened = this.state.isOpened;
@@ -180,35 +187,12 @@ export default class goodsDetails extends Component {
                     <View onClick={this.shopButton} className='shop-button'>加入购物车</View>
                     <View onClick={this.sellButton} className='sell-button'>立即购买</View>
                 </View>
-                {/* <AtFloatLayout
-                    isOpened={this.state.isOpened}
-                    title='请选择'
-                    onClose={this.handleClose}
-                    className='floatlayout-container'>
-                    <View className='floatlayout-info'>
-                        <View>
-                            <Image mode='widthFix' src={goodDetails.titleUrl} style='width: 25vw;'></Image>
-                        </View>
-                        <View className='floatlayout-right'>
-                            <View>{goodDetails.name}</View>
-                            <View className='floatlayout-price'>
-                                <Text style='color:#FFAC46;'>{goodDetails.price}</Text>
-                                <Text style='color:#B7B7B7;'>{goodDetails.amount}</Text>
-                            </View>
-                        </View>
-                    </View>
-                    <AtInputNumber
-                        min={1}
-                        value={this.state.sellNum}
-                        onChange={this.sellNumChange}
-                    />
-                </AtFloatLayout> */}
                 {
                     isOpened &&
                     <View className='floatlayout-container'>
                         <View className='floatlayout-info'>
                             <View className='floatlayout-header'>
-                                <AtIcon value='close' size='15' color='#B7B7B7'></AtIcon>
+                                <AtIcon value='close' size='15' color='#B7B7B7' onClick={this.closeButton}></AtIcon>
                             </View>
                             <View className='floatlayout-mes'>
                                 <View>
