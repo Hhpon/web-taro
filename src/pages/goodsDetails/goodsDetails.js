@@ -112,15 +112,20 @@ export default class goodsDetails extends Component {
 
     // 立即购买按钮(实际动作而非弹窗)
     sellNowButton() {
+        const openId = Taro.getStorageSync('openid');
         Taro.request({
-            url: 'http://localhost:7001/sellHandle',
+            url: 'http://localhost:7001/shoppingCart',
             method: 'POST',
             data: {
-                sellNum: this.state.sellNum,
-                goodDetails: this.state.goodDetails
+                shoppingNum: this.state.sellNum,
+                goodDetail: this.state.goodDetails,
+                openId: openId
             }
         }).then(res => {
             console.log(res);
+            Taro.switchTab({
+                url: '/pages/shopcart/shopcart'
+            })
         })
     }
 

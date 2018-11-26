@@ -158,6 +158,7 @@ export default class Index extends Component {
       url: 'http://localhost:7001/shoppingCart',
       method: 'POST',
       data: {
+        shoppingNum: 1,
         goodDetail: goodDetail,
         openId: openId
       },
