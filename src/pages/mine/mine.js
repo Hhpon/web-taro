@@ -19,7 +19,7 @@ export default class mine extends Component {
     componentWillMount() {
         const openId = Taro.getStorageSync('openid');
         Taro.request({
-            url: 'http://localhost:7001/getUserinfo',
+            url: 'https://home.hhp.im/getUserinfo',
             data: {
                 openId: openId
             }

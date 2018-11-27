@@ -75,7 +75,7 @@ export default class Index extends Component {
     this.state.sliderGoods = [];
     this.state.Goods = [];
     Taro.request({
-      url: 'http://localhost:7001/getGoods',
+      url: 'https://home.hhp.im/getGoods',
       method: 'POST',
       data: {
         index: index
@@ -126,7 +126,7 @@ export default class Index extends Component {
       Taro.login({
         success(res) {
           Taro.request({
-            url: 'http://localhost:7001/onLogin',
+            url: 'https://home.hhp.im/onLogin',
             method: 'POST',
             data: {
               code: res.code,
@@ -155,7 +155,7 @@ export default class Index extends Component {
     let goodDetail = e.currentTarget.dataset.gooddetail;
     let openId = this.state.openId;
     Taro.request({
-      url: 'http://localhost:7001/shoppingCart',
+      url: 'https://home.hhp.im/shoppingCart',
       method: 'POST',
       data: {
         shoppingNum: 1,
