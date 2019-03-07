@@ -310,18 +310,23 @@ export default class shopcart extends Component {
     let time = myDate.getTime().toString()
     let out_trade_no = year + month + date + time
     
-    // Taro.request({
-    //   url: 'http://127.0.0.1:7001/toPay',
-    //   method: 'POST',
-    //   data: {
-    //     openId: this.state.openId,
-    //     appId: 'wx083cd7624c4db2ec',
-    //     mch_id: '1513854421',
-    //     body: '健康家园-商品',
-    //     total_fee: this.state.totalPrices * 100,
-    //     spbill_create_ip: '127.0.0.1'
-    //   }
-    // })
+    Taro.request({
+      url: 'http://127.0.0.1:7001/toPay',
+      method: 'POST',
+      data: {
+        openId: this.state.openId,
+        appId: 'wx083cd7624c4db2ec',
+        mch_id: '1513854421',
+        body: '健康家园-商品',
+        out_trade_no: out_trade_no,
+        total_fee: this.state.totalPrices * 100,
+        spbill_create_ip: '127.0.0.1',
+        notify_url: 'https://home.hhp.im/getWechatMes',
+        trade_type: 'JSAPI'
+      }
+    }).then(res => {
+      console.log(res);
+    })
   }
 
 
