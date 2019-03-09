@@ -300,8 +300,8 @@ export default class shopcart extends Component {
   }
 
 
-  // 结算
-  toPay() {
+  // 统一下单（预支付）
+  toRePay() {
     // 根据下单时间设置商户订单号
     let myDate = new Date()
     let year = myDate.getFullYear().toString()
@@ -309,9 +309,10 @@ export default class shopcart extends Component {
     let date = (myDate.getDate().toString().length === 1) ? '0' + myDate.getDate().toString() : myDate.getDate().toString()
     let time = myDate.getTime().toString()
     let out_trade_no = year + month + date + time
-    
+
+    // 统一下单返回预支付信息
     Taro.request({
-      url: 'http://127.0.0.1:7001/toPay',
+      url: 'http://127.0.0.1:7001/toRePay',
       method: 'POST',
       data: {
         openId: this.state.openId,
@@ -326,8 +327,35 @@ export default class shopcart extends Component {
       }
     }).then(res => {
       console.log(res);
+
+      // 再次签名
+      Taro.request({
+        url: 'http://127.0.0.1:7001/signAgain',
+        method: 'POST',
+        data: {
+          sign: JSON.stringify(res.data),
+          appId: 'wx083cd7624c4db2ec',
+          timeStamp: new Date().getTime().toString(),
+          signType: 'MD5'
+        }
+      }).then(result => {
+        console.log(result);
+
+        // 发起支付
+        Taro.requestPayment({
+          timeStamp: result.data.timeStamp,
+          nonceStr: result.data.nonceStr,
+          package: 'prepay_id=' + result.data.prepay_id,
+          signType: 'MD5',
+          paySign: result.data.paySign,
+          success: function(res) {
+            console.log(res);
+          }
+        })
+      })
     })
   }
+
 
 
   render() {
@@ -416,7 +444,7 @@ export default class shopcart extends Component {
               总计:
               <Text className='amount-text'>￥{this.state.totalPrices}</Text>
             </View>
-            <View className='pay-button' onClick={this.toPay}>结算</View>
+            <View className='pay-button' onClick={this.toRePay}>结算</View>
           </View>
         </View>
         <View style='height:50px'></View>
