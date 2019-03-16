@@ -371,19 +371,26 @@ export default class shopcart extends Component {
         }
       }).then(res => {
         console.log(res);
+        const orderMes = JSON.stringify(res.data);
+        const nonce_str = orderMes.split('nonce_str')[1].slice(10, -5);
+        const sign = orderMes.split('sign')[1].slice(10, -5);
+        const prepay_id = orderMes.split('prepay_id')[1].slice(10, -5);
 
+        console.log(sign);
+        console.log(nonce_str);
+        console.log(prepay_id);        
         // 再次签名
         Taro.request({
           url: 'http://127.0.0.1:7001/signAgain',
           method: 'POST',
           data: {
-            sign: JSON.stringify(res.data),
+            prepay_id: prepay_id,
             appId: 'wx083cd7624c4db2ec',
             timeStamp: new Date().getTime().toString(),
             signType: 'MD5'
           }
         }).then(result => {
-          console.log(result);
+          // console.log(result);
 
           // 发起支付
           Taro.requestPayment({
@@ -394,11 +401,26 @@ export default class shopcart extends Component {
             paySign: result.data.paySign,
             success: function (res) {
               console.log(res);
+            },
+            fail: function (res) {
+              // 查询订单信息
+              Taro.request({
+                url: 'http://127.0.0.1:7001/checkOrder',
+                method: 'POST',
+                data: {
+                  appid: 'wx083cd7624c4db2ec',
+                  mch_id: '1513854421',
+                  out_trade_no: out_trade_no
+                }
+              }).then(res => {
+                console.log(res);
+              })
             }
           })
         })
       })
     }
+
   }
 
 
