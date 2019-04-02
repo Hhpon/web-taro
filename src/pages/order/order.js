@@ -120,9 +120,9 @@ export default class order extends Component {
     }
   }
 
-
-  // 统一下单、支付
-  toRePay() {
+  // 确认支付？
+  checked() {
+    // 若没有选择地址
     if (this.state.isChooseAddress === false) {
       Taro.showToast({
         title: '请先选择地址！',
@@ -130,83 +130,135 @@ export default class order extends Component {
         duration: 2000
       })
     } else {
-      // 根据下单时间设置商户订单号
-      let myDate = new Date()
-      let year = myDate.getFullYear().toString()
-      let month = ((myDate.getMonth() + 1).toString().length === 1) ? '0' + (myDate.getMonth() + 1).toString() : (myDate.getMonth() + 1).toString()
-      let date = (myDate.getDate().toString().length === 1) ? '0' + myDate.getDate().toString() : myDate.getDate().toString()
-      let time = myDate.getTime().toString()
-      let out_trade_no = year + month + date + time
-
-      // 统一下单返回预支付信息
-      Taro.request({
-        url: 'http://127.0.0.1:7001/toRePay',
-        method: 'POST',
-        data: {
-          openId: this.state.openId,
-          appId: 'wx083cd7624c4db2ec',
-          mch_id: '1513854421',
-          body: '健康家园-商品',
-          out_trade_no: out_trade_no,
-          total_fee: this.state.totalPrices * 100,
-          spbill_create_ip: '127.0.0.1',
-          notify_url: 'https://home.hhp.im/getWechatMes',
-          trade_type: 'JSAPI'
-        }
-      }).then(res => {
-        console.log(res);
-        const orderMes = JSON.stringify(res.data);
-        const nonce_str = orderMes.split('nonce_str')[1].slice(10, -5);
-        const sign = orderMes.split('sign')[1].slice(10, -5);
-        const prepay_id = orderMes.split('prepay_id')[1].slice(10, -5);
-
-        console.log(sign);
-        console.log(nonce_str);
-        console.log(prepay_id);
-        // 再次签名
-        Taro.request({
-          url: 'http://127.0.0.1:7001/signAgain',
-          method: 'POST',
-          data: {
-            prepay_id: prepay_id,
-            appId: 'wx083cd7624c4db2ec',
-            timeStamp: new Date().getTime().toString(),
-            signType: 'MD5'
+      // 选择地址后弹出弹窗询问是否确认支付
+      let that = this;
+      Taro.showModal({
+        title: '提示',
+        content: '确认支付订单？',
+        success: function (res) {
+          if (res.confirm) {
+            that.toRePay();
+          } else if (res.cancel) {
+            console.log('cancel');
           }
-        }).then(result => {
-          // console.log(result);
-
-          // 发起支付
-          Taro.requestPayment({
-            timeStamp: result.data.timeStamp,
-            nonceStr: result.data.nonceStr,
-            package: 'prepay_id=' + result.data.prepay_id,
-            signType: 'MD5',
-            paySign: result.data.paySign,
-            success: function (res) {
-              console.log(res);
-            },
-            fail: function (res) {
-              // 查询订单信息
-              Taro.request({
-                url: 'http://127.0.0.1:7001/checkOrder',
-                method: 'POST',
-                data: {
-                  appid: 'wx083cd7624c4db2ec',
-                  mch_id: '1513854421',
-                  out_trade_no: out_trade_no
-                }
-              }).then(res => {
-                console.log(res);
-              })
-            }
-          })
-        })
+        }
       })
     }
-
   }
 
+  // 统一下单、支付
+  toRePay() {
+    // 根据下单时间设置商户订单号
+    let myDate = new Date()
+    let year = myDate.getFullYear().toString()
+    let month = ((myDate.getMonth() + 1).toString().length === 1) ? '0' + (myDate.getMonth() + 1).toString() : (myDate.getMonth() + 1).toString()
+    let date = (myDate.getDate().toString().length === 1) ? '0' + myDate.getDate().toString() : myDate.getDate().toString()
+    let time = myDate.getTime().toString()
+    let out_trade_no = year + month + date + time
+
+    // 统一下单返回预支付信息
+    Taro.request({
+      url: 'http://127.0.0.1:7001/toRePay',
+      method: 'POST',
+      data: {
+        openId: this.state.openId,
+        appId: 'wx083cd7624c4db2ec',
+        mch_id: '1513854421',
+        body: '健康家园-商品',
+        out_trade_no: out_trade_no,
+        total_fee: this.state.totalPrices * 100,
+        spbill_create_ip: '127.0.0.1',
+        notify_url: 'https://home.hhp.im/getWechatMes',
+        trade_type: 'JSAPI'
+      }
+    }).then(res => {
+      console.log(res);
+      const orderMes = JSON.stringify(res.data);
+      // const nonce_str = orderMes.split('nonce_str')[1].slice(10, -5);
+      // const sign = orderMes.split('sign')[1].slice(10, -5);
+      const prepay_id = orderMes.split('prepay_id')[1].slice(10, -5);
+
+      // 再次签名
+      Taro.request({
+        url: 'http://127.0.0.1:7001/signAgain',
+        method: 'POST',
+        data: {
+          prepay_id: prepay_id,
+          appId: 'wx083cd7624c4db2ec',
+          timeStamp: new Date().getTime().toString(),
+          signType: 'MD5'
+        }
+      }).then(result => {
+        // console.log(result);
+
+        // 发起支付
+        let that = this;
+        Taro.requestPayment({
+          timeStamp: result.data.timeStamp,
+          nonceStr: result.data.nonceStr,
+          package: 'prepay_id=' + result.data.prepay_id,
+          signType: 'MD5',
+          paySign: result.data.paySign,
+          // 支付成功
+          success: function (res) {
+            console.log(res);
+            if (res.errMsg === 'requestPayment:ok') {
+              // 生成订单存入数据库
+              Taro.request({
+                url: 'http://127.0.0.1:7001/addOrder',
+                method: 'POST',
+                data: {
+                  openId: that.state.openId,
+                  address: that.state.address,
+                  payGoods: that.state.payGoods,
+                  out_trade_no: out_trade_no,
+                  total_fee: that.state.totalPrices
+                }
+              }).then(res => {
+                if (res.data === '生成订单成功！') {
+                  that.toOrderDetail();
+                } else {
+                  console.log(res.data);
+                }
+              })
+            }
+          },
+          // 支付失败
+          fail: function (res) {
+            if (res.errMsg === 'requestPayment:fail cancel') {
+              Taro.showToast({
+                title: '支付失败！',
+                icon: 'success',
+                duration: 2000
+              })
+            }
+            // 查询订单信息
+            // Taro.request({
+            //   url: 'http://127.0.0.1:7001/checkOrder',
+            //   method: 'POST',
+            //   data: {
+            //     appid: 'wx083cd7624c4db2ec',
+            //     mch_id: '1513854421',
+            //     out_trade_no: out_trade_no
+            //   }
+            // }).then(res => {
+            //   console.log(res.data);
+            // })
+          },
+          complete: function(res) {
+            console.log(res);
+          }
+        })
+      })
+    })
+  }
+
+  // 跳转至订单详情
+  toOrderDetail() {
+    Taro.redirectTo({
+      url: '../orderDetail/orderDetail'
+    })
+  }
 
 
   render() {
@@ -272,7 +324,7 @@ export default class order extends Component {
             总计:
               <Text className='amount-text'>￥{this.state.totalPrices}</Text>
           </View>
-          <View className='pay-button' onClick={this.toRePay}>结算</View>
+          <View className='pay-button' onClick={this.checked}>结算</View>
         </View>
         <View style='height:50px'></View>
       </View>

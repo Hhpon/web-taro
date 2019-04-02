@@ -12,6 +12,7 @@ class App extends Component {
       'pages/shopcart/shopcart',
       'pages/goodsDetails/goodsDetails',
       'pages/order/order',
+      'pages/orderDetail/orderDetail',
     ],
     window: {
       backgroundTextStyle: 'light',
