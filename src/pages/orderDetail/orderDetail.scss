@@ -1,0 +1,93 @@
+.top {
+  font-size: 28px;
+  border-bottom: 1px solid #e9ebff;
+  padding: 30px;
+}
+
+.bottom {
+  border-bottom: 1px solid #e9ebff;
+
+  .cartDetails {
+    display: flex;
+    justify-content: center;
+    border-bottom: 1px solid #f7f7f7;
+    margin: 30px;
+
+    .goodDetail {
+      width: 95%;
+      display: flex;
+      align-items: center;
+      margin-bottom: 30px;
+
+      .good-image {
+        height: 25vw;
+        width: 25vw;
+      }
+
+      .good-text {
+        height: 25vw;
+        width: 70vw;
+        padding-left: 20px;
+        font-size: 28px;
+        display: flex;
+        flex-direction: column;
+
+        .text-top {
+          height: 100%;
+        }
+
+        .text-bottom {
+          font-size: 26px;
+          display: flex;
+          justify-content: space-between;
+        }
+      }
+    }
+  }
+
+  .box {
+    font-size: 28px;
+    color: #707070;
+    margin: 30px;
+    border-bottom: 1px solid #f7f7f7;
+
+    .item {
+      display: flex;
+      justify-content: space-between;
+      margin: 20px;
+    }
+  }
+
+  .btns {
+    display: flex;
+    justify-content: flex-end;
+
+    .cancelPayBtn {
+      background-color: #fff;
+      width: 180px;
+      font-size: 28px;
+      color: #707070;
+      border-radius: 50px;
+      border: 1px solid #63BA74;
+      margin: 0 20px 30px 20px;
+    }
+
+    .payBtn {
+      background-color: #61BA76;
+      color: #fff;
+      width: 180px;
+      font-size: 28px;
+      border-radius: 50px;
+      margin: 0 20px 30px 20px;
+    }
+  }
+}
+
+.backBtn {
+  background-color: #61BA76;
+  color: #fff;
+  width: 80%;
+  font-size: 32px;
+  border-radius: 50px;
+  margin-top: 50px;
+}

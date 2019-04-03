@@ -17,7 +17,8 @@ export default class order extends Component {
       address: {},
       isChooseAddress: false,
       payGoods: [],
-      totalPrices: 0
+      totalPrices: 0,
+      out_trade_no: ''
     }
   }
 
@@ -45,7 +46,7 @@ export default class order extends Component {
     let totalPrices = 0;
     payGoods.map((goodsDetail) => {
       if (goodsDetail.goodcheckStatus) {
-        totalPrices += goodsDetail.price * goodsDetail.shoppingNum;
+        totalPrices += goodsDetail.price * goodsDetail.shoppingNum
       }
     })
     this.setState({
@@ -60,7 +61,6 @@ export default class order extends Component {
       let that = this
       Taro.chooseAddress({
         success: function (res) {
-          console.log(JSON.stringify(res))
           if (res.errMsg === "chooseAddress:ok") {
             let userName = res.userName
             let telNumber = res.telNumber
@@ -77,39 +77,13 @@ export default class order extends Component {
         },
         // 获取收货地址失败
         fail: function (err) {
-          console.log(JSON.stringify(err));
           // 查看用户授权信息
           Taro.getSetting({
             success(res) {
               // 若收货地址未授权弹出弹窗让用户授权
               if (res.authSetting['scope.address'] === false) {
-                wx.showModal({
-                  title: '是否授权收货地址',
-                  content: '需要获取您的收货地址，请确认授权，否则将无法继续购买商品',
-                  success(res) {
-                    if (res.confirm) {
-                      // 用户同意授权则调出用户设置页面让用户授权
-                      Taro.openSetting({
-                        success(res) {
-                          if (res.authSetting['scope.address'] === true) {
-                            Taro.showToast({
-                              title: '授权成功!',
-                              icon: 'success',
-                              duration: 2000
-                            })
-                          }
-                        }
-                      })
-                    } else if (res.cancel) {
-                      // 授权失败
-                      Taro.showToast({
-                        title: '授权失败!',
-                        icon: 'none',
-                        duration: 2000
-                      })
-                    }
-                  }
-                })
+                // 让用户授权地址
+                that.settingAddress()
               }
             }
           })
@@ -118,6 +92,37 @@ export default class order extends Component {
     } else {
       console.log('当前微信版本不支持chooseAddress');
     }
+  }
+
+  // 让用户授权地址
+  settingAddress() {
+    Taro.showModal({
+      title: '是否授权收货地址',
+      content: '需要获取您的收货地址，请确认授权，否则将无法继续购买商品',
+      success(res) {
+        if (res.confirm) {
+          // 用户同意授权则调出用户设置页面让用户授权
+          Taro.openSetting({
+            success(res) {
+              if (res.authSetting['scope.address'] === true) {
+                Taro.showToast({
+                  title: '授权成功!',
+                  icon: 'success',
+                  duration: 2000
+                })
+              }
+            }
+          })
+        } else if (res.cancel) {
+          // 授权失败
+          Taro.showToast({
+            title: '授权失败!',
+            icon: 'none',
+            duration: 2000
+          })
+        }
+      }
+    })
   }
 
   // 确认支付？
@@ -156,6 +161,10 @@ export default class order extends Component {
     let time = myDate.getTime().toString()
     let out_trade_no = year + month + date + time
 
+    this.setState({
+      out_trade_no: out_trade_no
+    })
+
     // 统一下单返回预支付信息
     Taro.request({
       url: 'http://127.0.0.1:7001/toRePay',
@@ -172,10 +181,7 @@ export default class order extends Component {
         trade_type: 'JSAPI'
       }
     }).then(res => {
-      console.log(res);
       const orderMes = JSON.stringify(res.data);
-      // const nonce_str = orderMes.split('nonce_str')[1].slice(10, -5);
-      // const sign = orderMes.split('sign')[1].slice(10, -5);
       const prepay_id = orderMes.split('prepay_id')[1].slice(10, -5);
 
       // 再次签名
@@ -189,8 +195,6 @@ export default class order extends Component {
           signType: 'MD5'
         }
       }).then(result => {
-        // console.log(result);
-
         // 发起支付
         let that = this;
         Taro.requestPayment({
@@ -201,26 +205,8 @@ export default class order extends Component {
           paySign: result.data.paySign,
           // 支付成功
           success: function (res) {
-            console.log(res);
             if (res.errMsg === 'requestPayment:ok') {
-              // 生成订单存入数据库
-              Taro.request({
-                url: 'http://127.0.0.1:7001/addOrder',
-                method: 'POST',
-                data: {
-                  openId: that.state.openId,
-                  address: that.state.address,
-                  payGoods: that.state.payGoods,
-                  out_trade_no: out_trade_no,
-                  total_fee: that.state.totalPrices
-                }
-              }).then(res => {
-                if (res.data === '生成订单成功！') {
-                  that.toOrderDetail();
-                } else {
-                  console.log(res.data);
-                }
-              })
+              that.saveOrder('toBeDelivered') //生成待发货订单
             }
           },
           // 支付失败
@@ -231,21 +217,10 @@ export default class order extends Component {
                 icon: 'success',
                 duration: 2000
               })
+              that.saveOrder('pendingPayment') //生成待付款订单
             }
-            // 查询订单信息
-            // Taro.request({
-            //   url: 'http://127.0.0.1:7001/checkOrder',
-            //   method: 'POST',
-            //   data: {
-            //     appid: 'wx083cd7624c4db2ec',
-            //     mch_id: '1513854421',
-            //     out_trade_no: out_trade_no
-            //   }
-            // }).then(res => {
-            //   console.log(res.data);
-            // })
           },
-          complete: function(res) {
+          complete: function (res) {
             console.log(res);
           }
         })
@@ -253,10 +228,47 @@ export default class order extends Component {
     })
   }
 
+  // 查询订单信息
+  // findOrder() {
+  //   Taro.request({
+  //     url: 'http://127.0.0.1:7001/checkOrder',
+  //     method: 'POST',
+  //     data: {
+  //       appid: 'wx083cd7624c4db2ec',
+  //       mch_id: '1513854421',
+  //       out_trade_no: this.state.out_trade_no
+  //     }
+  //   }).then(res => {
+  //     console.log(res.data);
+  //   })
+  // }
+
+  // 生成订单存入数据库
+  saveOrder(status) {
+    Taro.request({
+      url: 'http://127.0.0.1:7001/addOrder',
+      method: 'POST',
+      data: {
+        openId: this.state.openId,
+        address: this.state.address,
+        payGoods: this.state.payGoods,
+        out_trade_no: this.state.out_trade_no,
+        total_fee: this.state.totalPrices,
+        status: status
+      }
+    }).then(res => {
+      if (res.data === '生成订单成功！') {
+        this.toOrderDetail();
+      } else {
+        console.log(res.data);
+      }
+    })
+  }
+
   // 跳转至订单详情
   toOrderDetail() {
     Taro.redirectTo({
-      url: '../orderDetail/orderDetail'
+      url: '../orderDetail/orderDetail?out_trade_no=' + this.state.out_trade_no
     })
   }
 
