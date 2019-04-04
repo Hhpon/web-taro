@@ -19,7 +19,7 @@ export default class Index extends Component {
       imgheights: 0,
       imgUrls: [],
       isUserOpened: false,
-      openId: '',
+      openId: ''
     }
   }
 
@@ -75,7 +75,7 @@ export default class Index extends Component {
     this.state.sliderGoods = [];
     this.state.Goods = [];
     Taro.request({
-      url: 'https://home.hhp.im/getGoods',
+      url: 'http://127.0.0.1:7001/getGoods',
       method: 'POST',
       data: {
         index: index
@@ -125,8 +125,9 @@ export default class Index extends Component {
       })
       Taro.login({
         success(res) {
+          console.log(res);
           Taro.request({
-            url: 'https://home.hhp.im/onLogin',
+            url: 'http://127.0.0.1:7001/onLogin',
             method: 'POST',
             data: {
               code: res.code,
@@ -155,7 +156,7 @@ export default class Index extends Component {
     let goodDetail = e.currentTarget.dataset.gooddetail;
     let openId = this.state.openId;
     Taro.request({
-      url: 'https://home.hhp.im/shoppingCart',
+      url: 'http://127.0.0.1:7001/shoppingCart',
       method: 'POST',
       data: {
         shoppingNum: 1,

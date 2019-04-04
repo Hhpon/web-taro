@@ -1,0 +1,20 @@
+.tabs {
+  display: flex;
+  justify-content: space-around;
+
+  .tabsItem {
+    height: 80px;
+    text-align: center;
+    line-height: 80px;
+    font-size: 28px;
+  }
+
+  .tabsItemActive {
+    // height: 80px;
+    // text-align: center;
+    // line-height: 80px;
+    // font-size: 28px;
+    border-bottom: 1px solid #63BA74;
+    color: #63BA74;
+  }
+}
