@@ -31,6 +31,13 @@ export default class mine extends Component {
     })
   }
 
+  // 跳转至商品订单
+  toOrderList() {
+    Taro.navigateTo({
+      url: '../orderList/orderList'
+    })
+  }
+
   render() {
     return (
       <View>
@@ -47,7 +54,7 @@ export default class mine extends Component {
           <View className='mine-order'>
             <View className='order-top'>
               <Text>我的订单</Text>
-              <View className='ordertop-right'>
+              <View className='ordertop-right' onClick={this.toOrderList}>
                 <Text>查看全部订单</Text>
                 <AtIcon value='chevron-right' size='15' color='#868281'></AtIcon>
               </View>

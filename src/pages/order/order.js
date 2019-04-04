@@ -218,6 +218,19 @@ export default class order extends Component {
                 duration: 2000
               })
               that.saveOrder('pendingPayment') //生成待付款订单
+              setTimeout(function () {
+                Taro.request({
+                  url: 'http://127.0.0.1:7001/closeOrder',
+                  method: 'POST',
+                  data: {
+                    appid: 'wx083cd7624c4db2ec',
+                    mch_id: '1513854421',
+                    out_trade_no: that.state.out_trade_no
+                  }
+                }).then(res => {
+                  console.log(res.data);
+                })
+              }, 300000)
             }
           },
           complete: function (res) {
@@ -259,9 +272,26 @@ export default class order extends Component {
     }).then(res => {
       if (res.data === '生成订单成功！') {
         this.toOrderDetail();
+        this.deleteCartGood();
       } else {
         console.log(res.data);
       }
+    })
+  }
+
+  // 删除购物车中该商品
+  deleteCartGood() {
+    this.state.payGoods.map((goodsDetail) => {
+      Taro.request({
+        url: 'http://127.0.0.1:7001/deleteUserCart',
+        method: 'POST',
+        data: {
+          openId: this.state.openId,
+          goodsId: goodsDetail.goodsId
+        }
+      }).then(res => {
+        console.log(res.data);
+      })
     })
   }
 

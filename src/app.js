@@ -3,6 +3,7 @@ import Index from './pages/index'
 
 import './app.scss'
 import './icon.scss'
+// import './custom-theme.scss'
 
 class App extends Component {
   config = {
@@ -13,6 +14,7 @@ class App extends Component {
       'pages/goodsDetails/goodsDetails',
       'pages/order/order',
       'pages/orderDetail/orderDetail',
+      'pages/orderList/orderList',
     ],
     window: {
       backgroundTextStyle: 'light',
