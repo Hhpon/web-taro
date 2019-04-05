@@ -43,7 +43,8 @@ export default class orderDetail extends Component {
     }).then(res => {
       console.log(res.data[0]);
       this.setState({
-        order: res.data[0]
+        order: res.data[0],
+        status: res.data[0].status
       }, (res) => {
         this.orderStatus()
       })
@@ -54,33 +55,12 @@ export default class orderDetail extends Component {
   componentDidUpdate() {
   }
 
-  // 判断订单状态
+  // 判断订单是否需要付款按钮
   orderStatus() {
-    const status = this.state.order.status
-    if (status === 'pendingPayment') {
+    const status = this.state.status
+    if (status === '待付款') {
       this.setState({
-        status: '待付款',
         payBtn: true
-      })
-    } else if (status === 'toBeDelivered') {
-      this.setState({
-        status: '待发货'
-      })
-    } else if (status === 'pendingReceipt') {
-      this.setState({
-        status: '待收货'
-      })
-    } else if (status === 'completed') {
-      this.setState({
-        status: '已完成'
-      })
-    } else if (status === 'closed') {
-      this.setState({
-        status: '已关闭'
-      })
-    } else if (status === 'refunding') {
-      this.setState({
-        status: '退款中'
       })
     }
   }
@@ -105,10 +85,10 @@ export default class orderDetail extends Component {
             method: 'POST',
             data: {
               out_trade_no: that.state.out_trade_no,
-              status: 'closed'  //关闭订单
+              status: '已关闭'  //关闭订单
             }
           }).then(res => {
-            if (res.data[0].status === "closed") {
+            if (res.data[0].status === "已关闭") {
               Taro.showToast({
                 title: '操作成功！',
                 icon: 'success',
@@ -189,7 +169,7 @@ export default class orderDetail extends Component {
               // 支付成功
               success: function (res) {
                 if (res.errMsg === 'requestPayment:ok') {
-                  that.saveOrder('toBeDelivered') //生成待发货订单
+                  that.saveOrder('待发货') //生成待发货订单
                 }
               },
               // 支付失败
@@ -200,7 +180,7 @@ export default class orderDetail extends Component {
                     icon: 'success',
                     duration: 2000
                   })
-                  that.saveOrder('pendingPayment') //生成待付款订单
+                  that.saveOrder('待付款') //生成待付款订单
                   setTimeout(function () {
                     Taro.request({
                       url: 'http://127.0.0.1:7001/closeOrder',

@@ -35,8 +35,9 @@ export default class orderList extends Component {
         openId: this.state.openId
       }
     }).then(res => {
+      console.log(res.data);
       this.setState({
-        orderList: res.data
+        orderList: res.data.reverse()
       })
     })
   }
@@ -47,7 +48,7 @@ export default class orderList extends Component {
 
   showOrder() {
     if (this.state.currentIndex === 1) {
-      
+
     }
   }
 
@@ -67,10 +68,57 @@ export default class orderList extends Component {
       )
     })
 
+
+    const orderList = this.state.orderList
+    const orders = orderList.map((order) => {
+      return (
+        <View className='orders'>
+          <View className='orderTop'>
+            <View className='orderNum'>订单号：{order.out_trade_no}</View>
+            <View className='orderStatus'>{order.status}</View>
+          </View>
+          <View>
+            {order.payGoods.map((orderItem) => {
+              return (
+                <View className='cartDetails'>
+                  <View className='goodDetail'>
+                    <Image className='good-image' mode='aspectFill' src={orderItem.titleUrl}></Image>
+                    <View className='good-text'>
+                      <View className='text-top'>
+                        <View>{orderItem.name}</View>
+                        <View style='font-size: 13px; padding-top: 8px; color: #b7b7b7'>{orderItem.subTitle}</View>
+                      </View>
+                      <View className='text-bottom'>
+                        <View>
+                          <Text>￥{orderItem.price}</Text>
+                        </View>
+                        <View className='edit-button'>
+                          <Text style='width:40px;text-align:center;'>
+                            x{orderItem.shoppingNum}
+                          </Text>
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+                </View>
+              )
+            })}
+          </View>
+          <View className='orderPrice'>
+            <Text>总价：</Text>
+            <Text style='color:#fd2844;'>￥{order.total_fee}</Text>            
+          </View>
+        </View>
+      )
+    })
+
     return (
       <View>
         <View className='tabs'>
           {tabs}
+        </View>
+        <View>
+          {orders}
         </View>
       </View>
     )

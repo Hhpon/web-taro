@@ -206,7 +206,7 @@ export default class order extends Component {
           // 支付成功
           success: function (res) {
             if (res.errMsg === 'requestPayment:ok') {
-              that.saveOrder('toBeDelivered') //生成待发货订单
+              that.saveOrder('待发货') //生成待发货订单
             }
           },
           // 支付失败
@@ -217,7 +217,7 @@ export default class order extends Component {
                 icon: 'success',
                 duration: 2000
               })
-              that.saveOrder('pendingPayment') //生成待付款订单
+              that.saveOrder('待付款') //生成待付款订单
               setTimeout(function () {
                 Taro.request({
                   url: 'http://127.0.0.1:7001/closeOrder',
