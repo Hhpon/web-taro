@@ -17,7 +17,8 @@ export default class orderDetail extends Component {
       out_trade_no: '',
       order: {},
       status: '',
-      payBtn: false
+      payBtn: false,
+      refundBtn: false
     }
   }
 
@@ -25,7 +26,6 @@ export default class orderDetail extends Component {
   componentWillMount() {
     const openId = Taro.getStorageSync('openid')
     const out_trade_no = this.$router.params.out_trade_no
-    // const out_trade_no = '201904041554369177692'
     this.setState({
       openId: openId,
       out_trade_no: out_trade_no
@@ -60,7 +60,14 @@ export default class orderDetail extends Component {
     const status = this.state.status
     if (status === '待付款') {
       this.setState({
-        payBtn: true
+        payBtn: true,
+        refundBtn: false
+      })
+    }
+    if (status === '待发货' || status === '待收货') {
+      this.setState({
+        payBtn: false,
+        refundBtn: true
       })
     }
   }
@@ -95,7 +102,7 @@ export default class orderDetail extends Component {
                 duration: 2000
               })
               Taro.redirectTo({
-                url: '../orderList/orderList'
+                url: '../orderList/orderList?index=' + 1
               })
             }
           })
@@ -206,6 +213,33 @@ export default class orderDetail extends Component {
     })
   }
 
+  // 申请退款
+  refund() {
+    // 根据下单时间设置商户退款单号
+    let myDate = new Date()
+    let year = myDate.getFullYear().toString()
+    let month = ((myDate.getMonth() + 1).toString().length === 1) ? '0' + (myDate.getMonth() + 1).toString() : (myDate.getMonth() + 1).toString()
+    let date = (myDate.getDate().toString().length === 1) ? '0' + myDate.getDate().toString() : myDate.getDate().toString()
+    let time = myDate.getTime().toString()
+    let out_refund_no = 're' + year + month + date + time
+
+    Taro.request({
+      url: 'http://127.0.0.1:7001/refund',
+      method: 'POST',
+      data: {
+        openId: this.state.openId,
+        appid: 'wx083cd7624c4db2ec',
+        mch_id: '1513854421',
+        out_trade_no: this.state.out_trade_no,
+        out_refund_no: out_refund_no,
+        total_fee: this.state.order.total_fee * 100,
+        refund_fee: this.state.order.total_fee * 100
+      }
+    }).then((res) => {
+      console.log(res);
+    })
+  }
+
   // 生成订单存入数据库
   saveOrder(status) {
     Taro.request({
@@ -281,12 +315,20 @@ export default class orderDetail extends Component {
     })
 
     const payBtn = this.state.payBtn
-    const payBtns = null
+    const refundBtn = this.state.refundBtn
+    const Btns = null
     if (payBtn === true) {
-      payBtns =
+      Btns =
         <View className='btns'>
           <Button className='cancelPayBtn' onClick={this.cancelPay}>取消支付</Button>
           <Button className='payBtn' onClick={this.pay}>立即支付</Button>
+        </View>
+    }
+    if (refundBtn === true) {
+      Btns =
+        <View className='btns'>
+          <Button className='cancelPayBtn'>联系卖家</Button>
+          <Button className='payBtn' onClick={this.refund}>申请退款</Button>
         </View>
     }
 
@@ -321,7 +363,7 @@ export default class orderDetail extends Component {
               <Text style='color:#ff0a0a;'>￥{order.total_fee}</Text>
             </View>
           </View>
-          <View>{payBtns}</View>
+          <View>{Btns}</View>
         </View>
         <View>
           <Button className='backBtn' onClick={this.backIndex}>回首页逛逛</Button>

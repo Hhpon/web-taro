@@ -1,43 +1,23 @@
 page {
   background-color: #F7F7F7;
+
   .container {
-    .mall-address {
-      height: 15vh;
-      padding: 10px 30px;
-      background-color: #FFFFFF;
-      .address-top {
-        padding-top: 30px;
+    .nullCart {
+      margin: 40% auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      .nullCartText {
         font-size: 28px;
-        display: flex;
-        .text {
-          margin: 20px 60px;
-        }
-      }
-      .address-bottom {
-        font-size: 24px;
-        color: #B5B5B5;
-        display: flex;
-        align-items: center;
-        .position-icon {
-          padding-right: 20px;
-        }
+        margin: 20px;
       }
     }
-    .addAddress {
-      background-color: #ffffff;
-      padding: 50px;
-      .btn {
-        background-color: #61BA76;
-        width: 250px;
-        height: 80px;
-        color: #ffffff;
-        font-size: 32px;
-      }
-    }
+
     .shopping-goods {
       margin-top: 20px;
       background-color: #FFFFFF;
       padding: 0px 30px;
+
       .check {
         height: 80px;
         line-height: 80px;
@@ -45,24 +25,29 @@ page {
         border-bottom: 1px solid #E3E3E3;
         display: flex;
         align-items: center;
+
         .check-text {
           padding-left: 20px;
         }
       }
+
       .cartDetails {
         display: flex;
         justify-content: space-between;
         align-items: center;
         border-bottom: 1px solid #E3E3E3;
+
         .goodDetail {
           width: 90%;
           height: 25vh;
           display: flex;
           align-items: center;
+
           .good-image {
             height: 25vw;
             width: 25vw;
           }
+
           .good-text {
             height: 18vh;
             width: 70vw;
@@ -70,13 +55,16 @@ page {
             font-size: 28px;
             display: flex;
             flex-direction: column;
+
             .text-top {
               height: 100%;
             }
+
             .text-bottom {
               font-size: 26px;
               display: flex;
               justify-content: space-between;
+
               .edit-button {
                 display: flex;
                 align-items: center;
@@ -86,6 +74,7 @@ page {
         }
       }
     }
+
     .pay-container {
       height: 100px;
       width: 100%;
@@ -97,25 +86,32 @@ page {
       display: flex;
       justify-content: space-between;
       background-color: #FFFFFF;
+
       .check-all {
         padding: 0px 30px;
+
         .icon-class {
           height: 100px;
           line-height: 90px
         }
+
         .all-text {
           padding: 0px 15px;
         }
       }
+
       .pay-handle {
         width: 55%;
         display: flex;
+
         .totle-amount {
           width: 40%;
+
           .amount-text {
             color: #FFAC46;
           }
         }
+
         .pay-button {
           width: 60%;
           padding: 0px 8px;
