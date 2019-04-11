@@ -240,6 +240,38 @@ export default class orderDetail extends Component {
     })
   }
 
+  // 确认收货
+  confirmReceipt() {
+    let that = this
+    Taro.showModal({
+      title: '确认收货',
+      content: '确认收货后不可进行退款退货，是否确认收货？',
+      success: function (res) {
+        if (res.confirm) {
+          Taro.request({
+            url: 'http://127.0.0.1:7001/changeOrderStatus',
+            method: 'POST',
+            data: {
+              out_trade_no: that.state.out_trade_no,
+              status: '已完成'  //完成订单
+            }
+          }).then(res => {
+            if (res.data[0].status === "已完成") {
+              Taro.showToast({
+                title: '操作成功！',
+                icon: 'success',
+                duration: 2000
+              })
+              Taro.redirectTo({
+                url: '../orderList/orderList?index=' + 1
+              })
+            }
+          })
+        }
+      }
+    })
+  }
+
   // 生成订单存入数据库
   saveOrder(status) {
     Taro.request({
@@ -328,7 +360,8 @@ export default class orderDetail extends Component {
       Btns =
         <View className='btns'>
           <Button className='cancelPayBtn'>联系卖家</Button>
-          <Button className='payBtn' onClick={this.refund}>申请退款</Button>
+          <Button className='cancelPayBtn' onClick={this.refund}>申请退款</Button>
+          <Button className='payBtn' onClick={this.confirmReceipt}>确认收货</Button>
         </View>
     }
 
