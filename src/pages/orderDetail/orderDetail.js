@@ -17,7 +17,8 @@ export default class orderDetail extends Component {
       out_trade_no: '',
       order: {},
       status: '',
-      payBtn: false
+      payBtn: false,
+      refundBtn: false
     }
   }
 
@@ -25,7 +26,6 @@ export default class orderDetail extends Component {
   componentWillMount() {
     const openId = Taro.getStorageSync('openid')
     const out_trade_no = this.$router.params.out_trade_no
-    // const out_trade_no = '201904041554369177692'
     this.setState({
       openId: openId,
       out_trade_no: out_trade_no
@@ -43,7 +43,8 @@ export default class orderDetail extends Component {
     }).then(res => {
       console.log(res.data[0]);
       this.setState({
-        order: res.data[0]
+        order: res.data[0],
+        status: res.data[0].status
       }, (res) => {
         this.orderStatus()
       })
@@ -54,33 +55,19 @@ export default class orderDetail extends Component {
   componentDidUpdate() {
   }
 
-  // 判断订单状态
+  // 判断订单是否需要付款按钮
   orderStatus() {
-    const status = this.state.order.status
-    if (status === 'pendingPayment') {
+    const status = this.state.status
+    if (status === '待付款') {
       this.setState({
-        status: '待付款',
-        payBtn: true
+        payBtn: true,
+        refundBtn: false
       })
-    } else if (status === 'toBeDelivered') {
+    }
+    if (status === '待发货' || status === '待收货') {
       this.setState({
-        status: '待发货'
-      })
-    } else if (status === 'pendingReceipt') {
-      this.setState({
-        status: '待收货'
-      })
-    } else if (status === 'completed') {
-      this.setState({
-        status: '已完成'
-      })
-    } else if (status === 'closed') {
-      this.setState({
-        status: '已关闭'
-      })
-    } else if (status === 'refunding') {
-      this.setState({
-        status: '退款中'
+        payBtn: false,
+        refundBtn: true
       })
     }
   }
@@ -105,17 +92,17 @@ export default class orderDetail extends Component {
             method: 'POST',
             data: {
               out_trade_no: that.state.out_trade_no,
-              status: 'closed'  //关闭订单
+              status: '已关闭'  //关闭订单
             }
           }).then(res => {
-            if (res.data[0].status === "closed") {
+            if (res.data[0].status === "已关闭") {
               Taro.showToast({
                 title: '操作成功！',
                 icon: 'success',
                 duration: 2000
               })
               Taro.redirectTo({
-                url: '../orderList/orderList'
+                url: '../orderList/orderList?index=' + 1
               })
             }
           })
@@ -189,7 +176,7 @@ export default class orderDetail extends Component {
               // 支付成功
               success: function (res) {
                 if (res.errMsg === 'requestPayment:ok') {
-                  that.saveOrder('toBeDelivered') //生成待发货订单
+                  that.saveOrder('待发货') //生成待发货订单
                 }
               },
               // 支付失败
@@ -200,7 +187,7 @@ export default class orderDetail extends Component {
                     icon: 'success',
                     duration: 2000
                   })
-                  that.saveOrder('pendingPayment') //生成待付款订单
+                  that.saveOrder('待付款') //生成待付款订单
                   setTimeout(function () {
                     Taro.request({
                       url: 'http://127.0.0.1:7001/closeOrder',
@@ -222,6 +209,65 @@ export default class orderDetail extends Component {
             })
           })
         })
+      }
+    })
+  }
+
+  // 申请退款
+  refund() {
+    // 根据下单时间设置商户退款单号
+    let myDate = new Date()
+    let year = myDate.getFullYear().toString()
+    let month = ((myDate.getMonth() + 1).toString().length === 1) ? '0' + (myDate.getMonth() + 1).toString() : (myDate.getMonth() + 1).toString()
+    let date = (myDate.getDate().toString().length === 1) ? '0' + myDate.getDate().toString() : myDate.getDate().toString()
+    let time = myDate.getTime().toString()
+    let out_refund_no = 're' + year + month + date + time
+
+    Taro.request({
+      url: 'http://127.0.0.1:7001/refund',
+      method: 'POST',
+      data: {
+        openId: this.state.openId,
+        appid: 'wx083cd7624c4db2ec',
+        mch_id: '1513854421',
+        out_trade_no: this.state.out_trade_no,
+        out_refund_no: out_refund_no,
+        total_fee: this.state.order.total_fee * 100,
+        refund_fee: this.state.order.total_fee * 100
+      }
+    }).then((res) => {
+      console.log(res);
+    })
+  }
+
+  // 确认收货
+  confirmReceipt() {
+    let that = this
+    Taro.showModal({
+      title: '确认收货',
+      content: '确认收货后不可进行退款退货，是否确认收货？',
+      success: function (res) {
+        if (res.confirm) {
+          Taro.request({
+            url: 'http://127.0.0.1:7001/changeOrderStatus',
+            method: 'POST',
+            data: {
+              out_trade_no: that.state.out_trade_no,
+              status: '已完成'  //完成订单
+            }
+          }).then(res => {
+            if (res.data[0].status === "已完成") {
+              Taro.showToast({
+                title: '操作成功！',
+                icon: 'success',
+                duration: 2000
+              })
+              Taro.redirectTo({
+                url: '../orderList/orderList?index=' + 1
+              })
+            }
+          })
+        }
       }
     })
   }
@@ -301,12 +347,21 @@ export default class orderDetail extends Component {
     })
 
     const payBtn = this.state.payBtn
-    const payBtns = null
+    const refundBtn = this.state.refundBtn
+    const Btns = null
     if (payBtn === true) {
-      payBtns =
+      Btns =
         <View className='btns'>
           <Button className='cancelPayBtn' onClick={this.cancelPay}>取消支付</Button>
           <Button className='payBtn' onClick={this.pay}>立即支付</Button>
+        </View>
+    }
+    if (refundBtn === true) {
+      Btns =
+        <View className='btns'>
+          <Button className='cancelPayBtn'>联系卖家</Button>
+          <Button className='cancelPayBtn' onClick={this.refund}>申请退款</Button>
+          <Button className='payBtn' onClick={this.confirmReceipt}>确认收货</Button>
         </View>
     }
 
@@ -341,7 +396,7 @@ export default class orderDetail extends Component {
               <Text style='color:#ff0a0a;'>￥{order.total_fee}</Text>
             </View>
           </View>
-          <View>{payBtns}</View>
+          <View>{Btns}</View>
         </View>
         <View>
           <Button className='backBtn' onClick={this.backIndex}>回首页逛逛</Button>

@@ -14,7 +14,12 @@ export default class orderList extends Component {
     this.state = {
       openId: '',
       orderList: [],
-      currentIndex: 1
+      allList: [],
+      pendingPayment: [],
+      toBeDelivered: [],
+      pendingReceipt: [],
+      completed: [],
+      currentIndex: 0
     }
   }
 
@@ -35,8 +40,35 @@ export default class orderList extends Component {
         openId: this.state.openId
       }
     }).then(res => {
+      console.log(res.data)
+      const index = Number(this.$router.params.index)
+      let pendingPayment = []
+      let toBeDelivered = []
+      let pendingReceipt = []
+      let completed = []
+      res.data.map((orderItem) => {
+        if (orderItem.status === '待付款') {
+          pendingPayment.push(orderItem)
+        }
+        if (orderItem.status === '待发货') {
+          toBeDelivered.push(orderItem)
+        }
+        if (orderItem.status === '待收货') {
+          pendingReceipt.push(orderItem)
+        }
+        if (orderItem.status === '已完成') {
+          completed.push(orderItem)
+        }
+      })
       this.setState({
-        orderList: res.data
+        allList: res.data.reverse(),
+        pendingPayment: pendingPayment,
+        toBeDelivered: toBeDelivered,
+        pendingReceipt: pendingReceipt,
+        completed: completed,
+        currentIndex: index
+      }, (res) => {
+        this.changeTab(index)
       })
     })
   }
@@ -45,16 +77,44 @@ export default class orderList extends Component {
   componentDidUpdate() {
   }
 
-  showOrder() {
-    if (this.state.currentIndex === 1) {
-      
+  // 改变被选中的tab
+  changeTab(index, e) {
+    if (index === 1) {
+      this.setState({
+        currentIndex: index,
+        orderList: this.state.allList
+      })
+    }
+    if (index === 2) {
+      this.setState({
+        currentIndex: index,
+        orderList: this.state.pendingPayment
+      })
+    }
+    if (index === 3) {
+      this.setState({
+        currentIndex: index,
+        orderList: this.state.toBeDelivered
+      })
+    }
+    if (index === 4) {
+      this.setState({
+        currentIndex: index,
+        orderList: this.state.pendingReceipt
+      })
+    }
+    if (index === 5) {
+      this.setState({
+        currentIndex: index,
+        orderList: this.state.completed
+      })
     }
   }
 
-  // 改变被选中的tab
-  changeTab(index, e) {
-    this.setState({
-      currentIndex: index
+  // 跳转至订单详情
+  toOrderDetail(out_trade_no, e) {
+    Taro.navigateTo({
+      url: '../orderDetail/orderDetail?out_trade_no=' + out_trade_no
     })
   }
 
@@ -67,10 +127,57 @@ export default class orderList extends Component {
       )
     })
 
+
+    const orderList = this.state.orderList
+    const orders = orderList.map((order) => {
+      return (
+        <View className='orders' onClick={this.toOrderDetail.bind(this, order.out_trade_no)}>
+          <View className='orderTop'>
+            <View className='orderNum'>订单号：{order.out_trade_no}</View>
+            <View className='orderStatus'>{order.status}</View>
+          </View>
+          <View>
+            {order.payGoods.map((orderItem) => {
+              return (
+                <View className='cartDetails'>
+                  <View className='goodDetail'>
+                    <Image className='good-image' mode='aspectFill' src={orderItem.titleUrl}></Image>
+                    <View className='good-text'>
+                      <View className='text-top'>
+                        <View>{orderItem.name}</View>
+                        <View style='font-size: 13px; padding-top: 8px; color: #b7b7b7'>{orderItem.subTitle}</View>
+                      </View>
+                      <View className='text-bottom'>
+                        <View>
+                          <Text>￥{orderItem.price}</Text>
+                        </View>
+                        <View className='edit-button'>
+                          <Text style='width:40px;text-align:center;'>
+                            x{orderItem.shoppingNum}
+                          </Text>
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+                </View>
+              )
+            })}
+          </View>
+          <View className='orderPrice'>
+            <Text>总价：</Text>
+            <Text style='color:#fd2844;'>￥{order.total_fee}</Text>
+          </View>
+        </View>
+      )
+    })
+
     return (
       <View>
         <View className='tabs'>
           {tabs}
+        </View>
+        <View>
+          {orders}
         </View>
       </View>
     )

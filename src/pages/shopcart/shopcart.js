@@ -1,6 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text, Button } from '@tarojs/components'
 import { AtIcon } from 'taro-ui'
+import nullshop from '../../asset/images/nullshop.png'
 
 import './shopcart.scss'
 
@@ -13,7 +14,7 @@ export default class shopcart extends Component {
   constructor() {
     super();
     this.state = {
-      checkColor: '',
+      checkColor: '#e4e4e4',
       openId: '',
       cart: [],
       totalPrices: 0
@@ -40,6 +41,9 @@ export default class shopcart extends Component {
       this.setState({
         cart: res.data.cart
       })
+      if (res.data.cart.length === 0) {
+        console.log('Kong');
+      }
       this.ischeckColor(res.data.cart);
       this.counttotalPrices(res.data.cart);
     })
@@ -69,7 +73,7 @@ export default class shopcart extends Component {
     } else {
       console.log('no');
       this.setState({
-        checkColor: ''
+        checkColor: '#e4e4e4'
       });
     }
   }
@@ -289,12 +293,21 @@ export default class shopcart extends Component {
   }
 
   render() {
+    const cart = this.state.cart
+    const nullCart = null
+    if (cart.length === 0) {
+      nullCart =
+        <View className='nullCart'>
+          <Image src={nullshop} style='width:70px;height:70px;'></Image>
+          <View className='nullCartText'>购物车空空如也~</View>
+        </View>
+    }
 
     const cartDetails = this.state.cart.map((goodsDetail) => {
       return (
         <View className='cartDetails'>
           <View onClick={this.goodcheckHandle} data-index='{{index}}'>
-            <AtIcon value='check-circle' size='20' color={goodsDetail.goodcheckStatus ? '#61BA76' : ''}></AtIcon>
+            <AtIcon value='check-circle' size='20' color={goodsDetail.goodcheckStatus ? '#61BA76' : '#e4e4e4'}></AtIcon>
           </View>
           <View className='goodDetail'>
             <Image className='good-image' mode='aspectFill' src={goodsDetail.titleUrl}></Image>
@@ -328,11 +341,12 @@ export default class shopcart extends Component {
 
     return (
       <View className='container'>
+        {nullCart}
         <View className='shopping-goods'>
-          <View className='check'>
+          {/* <View className='check'>
             <AtIcon value='check-circle' size='20' color='#62BB73'></AtIcon>
             <Text className='check-text'>次日到达</Text>
-          </View>
+          </View> */}
           <View>
             {cartDetails}
           </View>
