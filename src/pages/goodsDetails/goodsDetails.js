@@ -158,7 +158,7 @@ export default class goodsDetails extends Component {
             </View>
             <View className='price-right'>
               已抢{goodDetails.saleAmount}件
-                        </View>
+            </View>
           </View>
           <View className='title-container'>
             <View className='title-left'>
@@ -166,7 +166,9 @@ export default class goodsDetails extends Component {
               <View className='titleleft-bottom'>{goodDetails.subTitle}</View>
             </View>
             <View className='title-right'>
-              <AtIcon prefixClass='icon' value='fenxiang'></AtIcon>
+              <Button className='iconShare' openType='share'>
+                <AtIcon prefixClass='icon' value='fenxiang'></AtIcon>
+              </Button>
               <Text style='font-size:12px;'>分享</Text>
             </View>
           </View>

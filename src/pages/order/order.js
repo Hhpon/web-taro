@@ -220,17 +220,26 @@ export default class order extends Component {
               that.saveOrder('待付款') //生成待付款订单
               setTimeout(function () {
                 Taro.request({
-                  url: 'http://127.0.0.1:7001/closeOrder',
+                  url: 'http://127.0.0.1:7001/changeOrderStatus',
                   method: 'POST',
                   data: {
-                    appid: 'wx083cd7624c4db2ec',
-                    mch_id: '1513854421',
-                    out_trade_no: that.state.out_trade_no
+                    out_trade_no: that.state.out_trade_no,
+                    status: '已关闭'
                   }
                 }).then(res => {
-                  console.log(res.data);
+                  if (res.data[0].status === "已关闭") {
+                    Taro.request({
+                      url: 'http://127.0.0.1:7001/closeOrder',
+                      method: 'POST',
+                      data: {
+                        appid: 'wx083cd7624c4db2ec',
+                        mch_id: '1513854421',
+                        out_trade_no: that.state.out_trade_no
+                      }
+                    })
+                  }
                 })
-              }, 300000)
+              }, 1800000)
             }
           },
           complete: function (res) {
