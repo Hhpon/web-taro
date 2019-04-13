@@ -30,6 +30,7 @@ export default class order extends Component {
       openId: openId,
       payGoods: payGoods
     })
+    console.log(payGoods);
   }
 
   //生命周期 每当这页显示的时候要去后台请求数据库
@@ -206,7 +207,8 @@ export default class order extends Component {
           // 支付成功
           success: function (res) {
             if (res.errMsg === 'requestPayment:ok') {
-              that.saveOrder('待发货') //生成待发货订单
+              that.saveOrder('待发货'); //生成待发货订单
+              that.changeAmount(); //改变库存
             }
           },
           // 支付失败
@@ -285,6 +287,19 @@ export default class order extends Component {
       } else {
         console.log(res.data);
       }
+    })
+  }
+
+  // 改变库存数量
+  changeAmount() {
+    Taro.request({
+      url: 'http://127.0.0.1:7001/changeAmount',
+      method: 'POST',
+      data: {
+        payGoods: this.state.payGoods
+      }
+    }).then((res) => {
+      console.log(res.data);
     })
   }
 

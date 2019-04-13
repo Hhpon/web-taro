@@ -177,6 +177,7 @@ export default class orderDetail extends Component {
               success: function (res) {
                 if (res.errMsg === 'requestPayment:ok') {
                   that.saveOrder('待发货') //生成待发货订单
+                  that.changeAmount(); //改变库存
                 }
               },
               // 支付失败
@@ -301,6 +302,19 @@ export default class orderDetail extends Component {
       } else {
         console.log(res.data);
       }
+    })
+  }
+
+  // 改变库存数量
+  changeAmount() {
+    Taro.request({
+      url: 'http://127.0.0.1:7001/changeAmount',
+      method: 'POST',
+      data: {
+        payGoods: this.state.order.payGoods
+      }
+    }).then((res) => {
+      console.log(res.data);
     })
   }
 
