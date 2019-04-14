@@ -223,6 +223,28 @@ export default class orderDetail extends Component {
     })
   }
 
+  // 是否申请退款
+  toRefund() {
+    let that = this
+    Taro.showModal({
+      title: '申请退款',
+      content: '是否确认退款？',
+      success: function(res) {
+        if (res.confirm) {
+          if (that.state.status === '待发货') {
+            that.refund()
+          } else {
+            Taro.showToast({
+              title: '请先联系商家',
+              icon: 'none',
+              duration: 2000
+            })
+          }
+        }
+      }
+    })
+  }
+
   // 申请退款
   refund() {
     // 根据下单时间设置商户退款单号
@@ -382,8 +404,8 @@ export default class orderDetail extends Component {
     if (refundBtn === true) {
       Btns =
         <View className='btns'>
-          <Button className='cancelPayBtn'>联系卖家</Button>
-          <Button className='cancelPayBtn' onClick={this.refund}>申请退款</Button>
+          <Button className='cancelPayBtn' openType='contact'>联系卖家</Button>
+          <Button className='cancelPayBtn' onClick={this.toRefund}>申请退款</Button>
           <Button className='payBtn' onClick={this.confirmReceipt}>确认收货</Button>
         </View>
     }
