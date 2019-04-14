@@ -44,6 +44,7 @@ export default class goodsDetails extends Component {
       method: 'POST',
       data: {
         goodDetail: goodDetail,
+        shoppingNum: this.state.sellNum,
         openId: openId
       },
       success(res) {
@@ -158,18 +159,21 @@ export default class goodsDetails extends Component {
             </View>
             <View className='price-right'>
               已抢{goodDetails.saleAmount}件
-                        </View>
+            </View>
           </View>
           <View className='title-container'>
             <View className='title-left'>
               <View className='titleleft-top'>{goodDetails.name}</View>
-              <View className='titleleft-bottom'>{goodDetails.subTitle}</View>
+              <View className='titleleft-bottom'>{goodDetails.subTitle}/剩余{goodDetails.amount}件</View>
             </View>
             <View className='title-right'>
-              <AtIcon prefixClass='icon' value='fenxiang'></AtIcon>
+              <Button className='iconShare' openType='share'>
+                <AtIcon prefixClass='icon' value='fenxiang'></AtIcon>
+              </Button>
               <Text style='font-size:12px;'>分享</Text>
             </View>
           </View>
+          <View style='border-bottom: 10px solid #f7f7f7;'></View>
           <View>
             <View style='padding:15px;font-size:20px;font-weight:blod'>商品详情</View>
             <View>

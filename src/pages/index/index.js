@@ -12,8 +12,8 @@ export default class Index extends Component {
   constructor() {
     super();
     this.state = {
-      navName: ['热卖', '水果', '生鲜', '速食', '日百', '生活服务'],
-      navNum: 0,
+      // navName: ['热卖', '水果', '生鲜', '速食', '日百', '生活服务'],
+      currentIndex: "0",
       sliderGoods: [],
       Goods: [],
       imgheights: 0,
@@ -25,7 +25,7 @@ export default class Index extends Component {
 
   //生命周期 - 页面加载过程中请求商品title以及对新用户进行授权处理
   componentWillMount() {
-    this.getGoods(0);
+    this.getGoods(this.state.currentIndex);
     Taro.getSetting({
       success: (res) => {
         const userInfo = res.authSetting['scope.userInfo'];
@@ -54,12 +54,11 @@ export default class Index extends Component {
   componentDidHide() { }
 
   // 定义导航栏的点击事件
-  navActive(event) {
-    const index = event.currentTarget.dataset.index;
+  navActive(index, e) {
     this.setState({
-      navNum: index
+      currentIndex: index
     })
-    this.getGoods(index);
+    this.getGoods();
   }
 
   // 跳转到商品详情页
@@ -71,34 +70,35 @@ export default class Index extends Component {
   }
 
   // 上传类目请求数据
-  getGoods(index) {
-    this.state.sliderGoods = [];
-    this.state.Goods = [];
+  getGoods() {
     Taro.request({
       url: 'http://127.0.0.1:7001/getGoods',
-      method: 'POST',
-      data: {
-        index: index
-      }
+      method: 'GET'
     }).then(res => {
-
       const data = res.data.reverse(); // 把返回的数组调换顺序
+      console.log(data)
 
-      console.log(data);
+      const sliderGoods = []
+      const Goods = []
 
-      const sliderGoods = [];
       data.forEach(element => {
         if (element.sliderView) {
           const num = sliderGoods.length;
           if (num < 3) {
-            sliderGoods.push(element);
+            sliderGoods.push(element)
           }
-        } else {
-          this.state.Goods.push(element);
         }
       });
+
+      data.map((goods) => {
+        if (goods.classifyValue.indexOf(this.state.currentIndex) !== -1) {
+          Goods.push(goods)
+        }
+      })
+
       this.setState({
-        sliderGoods: sliderGoods
+        sliderGoods: sliderGoods,
+        Goods: Goods
       })
     })
   }
@@ -191,10 +191,12 @@ export default class Index extends Component {
 
   render() {
     const isUserOpened = this.state.isUserOpened;
-    const isToastOpened = this.state.isToastOpened;
-    const navHeader = this.state.navName.map((nav) => {
+
+    const navList = [{ index: "0", text: '热卖' }, { index: "1", text: '水果' }, { index: "2", text: '生鲜' }, { index: "3", text: '速食' }, { index: "4", text: '日百' }, { index: "5", text: '生活服务' }]
+    const navHeader = navList.map((nav) => {
       return (
-        <View className="{{index === navNum?'hover-nav':'nav'}}" onClick={this.navActive} data-index='{{index}}'>{nav}</View>
+        // <View className="{{index === navNum?'hover-nav':'nav'}}" onClick={this.navActive} data-index='{{index}}'>{nav}</View>
+        <Text className={`nav ${nav.index === this.state.currentIndex ? 'hover-nav' : null}`} onClick={this.navActive.bind(this, nav.index)}>{nav.text}</Text>
       )
     })
 

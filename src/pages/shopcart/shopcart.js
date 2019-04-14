@@ -120,7 +120,7 @@ export default class shopcart extends Component {
 
   //点击全选的方法
   checkallHandle() {
-    if (this.state.checkColor) {
+    if (this.state.checkColor === '#61BA76') {
       this.state.cart.map((goodsDetail) => {
         goodsDetail.goodcheckStatus = false;
       })

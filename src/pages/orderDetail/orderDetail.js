@@ -177,6 +177,7 @@ export default class orderDetail extends Component {
               success: function (res) {
                 if (res.errMsg === 'requestPayment:ok') {
                   that.saveOrder('待发货') //生成待发货订单
+                  that.changeAmount(); //改变库存
                 }
               },
               // 支付失败
@@ -190,17 +191,26 @@ export default class orderDetail extends Component {
                   that.saveOrder('待付款') //生成待付款订单
                   setTimeout(function () {
                     Taro.request({
-                      url: 'http://127.0.0.1:7001/closeOrder',
+                      url: 'http://127.0.0.1:7001/changeOrderStatus',
                       method: 'POST',
                       data: {
-                        appid: 'wx083cd7624c4db2ec',
-                        mch_id: '1513854421',
-                        out_trade_no: that.state.out_trade_no
+                        out_trade_no: that.state.out_trade_no,
+                        status: '已关闭'
                       }
                     }).then(res => {
-                      console.log(res.data);
+                      if (res.data[0].status === "已关闭") {
+                        Taro.request({
+                          url: 'http://127.0.0.1:7001/closeOrder',
+                          method: 'POST',
+                          data: {
+                            appid: 'wx083cd7624c4db2ec',
+                            mch_id: '1513854421',
+                            out_trade_no: that.state.out_trade_no
+                          }
+                        })
+                      }
                     })
-                  }, 300000)
+                  }, 1800000)
                 }
               },
               complete: function (res) {
@@ -209,6 +219,28 @@ export default class orderDetail extends Component {
             })
           })
         })
+      }
+    })
+  }
+
+  // 是否申请退款
+  toRefund() {
+    let that = this
+    Taro.showModal({
+      title: '申请退款',
+      content: '是否确认退款？',
+      success: function(res) {
+        if (res.confirm) {
+          if (that.state.status === '待发货') {
+            that.refund()
+          } else {
+            Taro.showToast({
+              title: '请先联系商家',
+              icon: 'none',
+              duration: 2000
+            })
+          }
+        }
       }
     })
   }
@@ -295,6 +327,19 @@ export default class orderDetail extends Component {
     })
   }
 
+  // 改变库存数量
+  changeAmount() {
+    Taro.request({
+      url: 'http://127.0.0.1:7001/changeAmount',
+      method: 'POST',
+      data: {
+        payGoods: this.state.order.payGoods
+      }
+    }).then((res) => {
+      console.log(res.data);
+    })
+  }
+
   // 删除购物车中该商品
   deleteCartGood() {
     this.state.order.payGoods.map((goodsDetail) => {
@@ -359,8 +404,8 @@ export default class orderDetail extends Component {
     if (refundBtn === true) {
       Btns =
         <View className='btns'>
-          <Button className='cancelPayBtn'>联系卖家</Button>
-          <Button className='cancelPayBtn' onClick={this.refund}>申请退款</Button>
+          <Button className='cancelPayBtn' openType='contact'>联系卖家</Button>
+          <Button className='cancelPayBtn' onClick={this.toRefund}>申请退款</Button>
           <Button className='payBtn' onClick={this.confirmReceipt}>确认收货</Button>
         </View>
     }
