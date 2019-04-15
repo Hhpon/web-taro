@@ -18,7 +18,8 @@ export default class orderDetail extends Component {
       order: {},
       status: '',
       payBtn: false,
-      refundBtn: false
+      refundBtn: false,
+      refund: false
     }
   }
 
@@ -68,6 +69,11 @@ export default class orderDetail extends Component {
       this.setState({
         payBtn: false,
         refundBtn: true
+      })
+    }
+    if (status === '退款成功') {
+      this.setState({
+        refund: true
       })
     }
   }
@@ -228,47 +234,28 @@ export default class orderDetail extends Component {
     let that = this
     Taro.showModal({
       title: '申请退款',
-      content: '是否确认退款？',
-      success: function(res) {
+      content: '好不容易挑选出来的商品，是否确认申请退款？',
+      success: function (res) {
         if (res.confirm) {
-          if (that.state.status === '待发货') {
-            that.refund()
-          } else {
-            Taro.showToast({
-              title: '请先联系商家',
-              icon: 'none',
-              duration: 2000
-            })
-          }
+          Taro.request({
+            url: 'http://127.0.0.1:7001/changeOrderStatus',
+            method: 'POST',
+            data: {
+              out_trade_no: that.state.out_trade_no,
+              status: '退款中'
+            }
+          }).then(res => {
+            if (res.data[0].status === "退款中") {
+              Taro.showToast({
+                title: '操作成功！',
+                icon: 'success',
+                duration: 2000
+              })
+              that.toOrderDetail()
+            }
+          })
         }
       }
-    })
-  }
-
-  // 申请退款
-  refund() {
-    // 根据下单时间设置商户退款单号
-    let myDate = new Date()
-    let year = myDate.getFullYear().toString()
-    let month = ((myDate.getMonth() + 1).toString().length === 1) ? '0' + (myDate.getMonth() + 1).toString() : (myDate.getMonth() + 1).toString()
-    let date = (myDate.getDate().toString().length === 1) ? '0' + myDate.getDate().toString() : myDate.getDate().toString()
-    let time = myDate.getTime().toString()
-    let out_refund_no = 're' + year + month + date + time
-
-    Taro.request({
-      url: 'http://127.0.0.1:7001/refund',
-      method: 'POST',
-      data: {
-        openId: this.state.openId,
-        appid: 'wx083cd7624c4db2ec',
-        mch_id: '1513854421',
-        out_trade_no: this.state.out_trade_no,
-        out_refund_no: out_refund_no,
-        total_fee: this.state.order.total_fee * 100,
-        refund_fee: this.state.order.total_fee * 100
-      }
-    }).then((res) => {
-      console.log(res);
     })
   }
 
@@ -373,7 +360,7 @@ export default class orderDetail extends Component {
             <View className='good-text'>
               <View className='text-top'>
                 <View>{goodDetail.name}</View>
-                <View style='font-size: 13px; padding-top: 8px; color: #b7b7b7'>{goodDetail.subTitle}</View>
+                <View style='font-size:13px;padding-top:8px;color:#b7b7b7'>{goodDetail.subTitle}</View>
               </View>
               <View className='text-bottom'>
                 <View>
@@ -410,10 +397,18 @@ export default class orderDetail extends Component {
         </View>
     }
 
+    const refundMsg = null
+    const refund = this.state.refund
+    if (refund === true) {
+      refundMsg =
+        <View style='color:#b7b7b7;margin-bottom:10px;font-size:13px;'>（退款1-3个工作日内退还，逾期未退还请及时联系卖家）</View>
+    }
+
     return (
       <View>
         <View className='top'>
           <View style='color:#63BA74;margin-bottom:10px;'>订单状态： {this.state.status}</View>
+          {refundMsg}
           <View>订单号： {this.state.out_trade_no}</View>
         </View>
         <View className='top'>
