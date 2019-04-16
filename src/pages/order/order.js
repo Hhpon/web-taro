@@ -168,7 +168,7 @@ export default class order extends Component {
 
     // 统一下单返回预支付信息
     Taro.request({
-      url: 'http://127.0.0.1:7001/toRePay',
+      url: 'https://home.hhp.im/toRePay',
       method: 'POST',
       data: {
         openId: this.state.openId,
@@ -187,7 +187,7 @@ export default class order extends Component {
 
       // 再次签名
       Taro.request({
-        url: 'http://127.0.0.1:7001/signAgain',
+        url: 'https://home.hhp.im/signAgain',
         method: 'POST',
         data: {
           prepay_id: prepay_id,
@@ -209,39 +209,57 @@ export default class order extends Component {
             if (res.errMsg === 'requestPayment:ok') {
               that.saveOrder('待发货'); //生成待发货订单
               that.changeAmount(); //改变库存
+            } else {
+              // 其他情况先查询订单是否支付成功
+              Taro.request({
+                url: 'https://home.hhp.im/checkOrder',
+                method: 'POST',
+                data: {
+                  appid: 'wx083cd7624c4db2ec',
+                  mch_id: '1513854421',
+                  out_trade_no: that.state.out_trade_no
+                }
+              }).then(res => {
+                let trade_state = res.data.split("trade_state")[1].slice(10, -5)
+                if (trade_state === "SUCCESS") {
+                  that.saveOrder('待发货'); //生成待发货订单
+                  that.changeAmount(); //改变库存
+                } else {
+                  Taro.showToast({
+                    title: '出错啦！',
+                    icon: 'none',
+                    duration: 2000
+                  })
+                }
+              })
             }
           },
           // 支付失败
           fail: function (res) {
             if (res.errMsg === 'requestPayment:fail cancel') {
-              Taro.showToast({
-                title: '支付失败！',
-                icon: 'success',
-                duration: 2000
+              that.payFail()
+            } else {
+              // 其他失败情况先查询订单是否未支付
+              Taro.request({
+                url: 'https://home.hhp.im/checkOrder',
+                method: 'POST',
+                data: {
+                  appid: 'wx083cd7624c4db2ec',
+                  mch_id: '1513854421',
+                  out_trade_no: that.state.out_trade_no
+                }
+              }).then(res => {
+                let trade_state = res.data.split("trade_state")[1].slice(10, -5)
+                if (trade_state === "NOTPAY") {
+                  that.payFail()
+                } else {
+                  Taro.showToast({
+                    title: '出错啦！',
+                    icon: 'none',
+                    duration: 2000
+                  })
+                }
               })
-              that.saveOrder('待付款') //生成待付款订单
-              setTimeout(function () {
-                Taro.request({
-                  url: 'http://127.0.0.1:7001/changeOrderStatus',
-                  method: 'POST',
-                  data: {
-                    out_trade_no: that.state.out_trade_no,
-                    status: '已关闭'
-                  }
-                }).then(res => {
-                  if (res.data[0].status === "已关闭") {
-                    Taro.request({
-                      url: 'http://127.0.0.1:7001/closeOrder',
-                      method: 'POST',
-                      data: {
-                        appid: 'wx083cd7624c4db2ec',
-                        mch_id: '1513854421',
-                        out_trade_no: that.state.out_trade_no
-                      }
-                    })
-                  }
-                })
-              }, 1800000)
             }
           },
           complete: function (res) {
@@ -252,25 +270,43 @@ export default class order extends Component {
     })
   }
 
-  // 查询订单信息
-  // findOrder() {
-  //   Taro.request({
-  //     url: 'http://127.0.0.1:7001/checkOrder',
-  //     method: 'POST',
-  //     data: {
-  //       appid: 'wx083cd7624c4db2ec',
-  //       mch_id: '1513854421',
-  //       out_trade_no: this.state.out_trade_no
-  //     }
-  //   }).then(res => {
-  //     console.log(res.data);
-  //   })
-  // }
+  // 支付失败关闭订单
+  payFail() {
+    Taro.showToast({
+      title: '支付失败！',
+      icon: 'success',
+      duration: 2000
+    })
+    this.saveOrder('待付款') //生成待付款订单
+    let that = this
+    setTimeout(function () {
+      Taro.request({
+        url: 'https://home.hhp.im/changeOrderStatus',
+        method: 'POST',
+        data: {
+          out_trade_no: that.state.out_trade_no,
+          status: '已关闭'
+        }
+      }).then(res => {
+        if (res.data[0].status === "已关闭") {
+          Taro.request({
+            url: 'https://home.hhp.im/closeOrder',
+            method: 'POST',
+            data: {
+              appid: 'wx083cd7624c4db2ec',
+              mch_id: '1513854421',
+              out_trade_no: that.state.out_trade_no
+            }
+          })
+        }
+      })
+    }, 1800000)
+  }
 
   // 生成订单存入数据库
   saveOrder(status) {
     Taro.request({
-      url: 'http://127.0.0.1:7001/addOrder',
+      url: 'https://home.hhp.im/addOrder',
       method: 'POST',
       data: {
         openId: this.state.openId,
@@ -293,7 +329,7 @@ export default class order extends Component {
   // 改变库存数量
   changeAmount() {
     Taro.request({
-      url: 'http://127.0.0.1:7001/changeAmount',
+      url: 'https://home.hhp.im/changeAmount',
       method: 'POST',
       data: {
         payGoods: this.state.payGoods
@@ -307,7 +343,7 @@ export default class order extends Component {
   deleteCartGood() {
     this.state.payGoods.map((goodsDetail) => {
       Taro.request({
-        url: 'http://127.0.0.1:7001/deleteUserCart',
+        url: 'https://home.hhp.im/deleteUserCart',
         method: 'POST',
         data: {
           openId: this.state.openId,

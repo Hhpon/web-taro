@@ -22,7 +22,7 @@ export default class goodsDetails extends Component {
     const goodId = this.$router.params.goodid;
     console.log(goodId);
     Taro.request({
-      url: 'http://127.0.0.1:7001/getGoodDetails',
+      url: 'https://home.hhp.im/getGoodDetails',
       method: 'POST',
       data: {
         goodId: goodId
@@ -40,7 +40,7 @@ export default class goodsDetails extends Component {
     let goodDetail = this.state.goodDetails;
     const openId = Taro.getStorageSync('openid');
     Taro.request({
-      url: 'http://127.0.0.1:7001/shoppingCart',
+      url: 'https://home.hhp.im/shoppingCart',
       method: 'POST',
       data: {
         goodDetail: goodDetail,
@@ -116,7 +116,7 @@ export default class goodsDetails extends Component {
   sellNowButton() {
     const openId = Taro.getStorageSync('openid');
     Taro.request({
-      url: 'http://127.0.0.1:7001/shoppingCart',
+      url: 'https://home.hhp.im/shoppingCart',
       method: 'POST',
       data: {
         shoppingNum: this.state.sellNum,
