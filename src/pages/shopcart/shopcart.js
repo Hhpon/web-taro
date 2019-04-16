@@ -32,7 +32,7 @@ export default class shopcart extends Component {
   //生命周期 每当这页显示的时候要去后台请求数据库
   componentDidShow() {
     Taro.request({
-      url: 'http://127.0.0.1:7001/getUserInfo',
+      url: 'https://home.hhp.im/getUserInfo',
       data: {
         openId: this.state.openId
       }
@@ -173,7 +173,7 @@ export default class shopcart extends Component {
 
     // 把更改的数据上传到数据库
     Taro.request({
-      url: 'http://127.0.0.1:7001/editUserCart',
+      url: 'https://home.hhp.im/editUserCart',
       method: 'POST',
       data: {
         kindof: 'add',
@@ -205,7 +205,7 @@ export default class shopcart extends Component {
         success: function (res) {
           if (res.confirm) {
             Taro.request({
-              url: 'http://127.0.0.1:7001/deleteUserCart',
+              url: 'https://home.hhp.im/deleteUserCart',
               method: 'POST',
               data: {
                 openId: openId,
@@ -257,7 +257,7 @@ export default class shopcart extends Component {
         })
       }
       Taro.request({
-        url: 'http://127.0.0.1:7001/editUserCart',
+        url: 'https://home.hhp.im/editUserCart',
         method: 'POST',
         data: {
           kindof: 'subtract',

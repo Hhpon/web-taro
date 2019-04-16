@@ -34,7 +34,7 @@ export default class orderList extends Component {
   //生命周期 每当这页显示的时候要去后台请求数据库
   componentDidShow() {
     Taro.request({
-      url: 'http://127.0.0.1:7001/getOrders',
+      url: 'https://home.hhp.im/getOrders',
       method: 'POST',
       data: {
         openId: this.state.openId

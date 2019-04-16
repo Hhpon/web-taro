@@ -12,7 +12,6 @@ export default class Index extends Component {
   constructor() {
     super();
     this.state = {
-      // navName: ['热卖', '水果', '生鲜', '速食', '日百', '生活服务'],
       currentIndex: "0",
       sliderGoods: [],
       Goods: [],
@@ -72,7 +71,7 @@ export default class Index extends Component {
   // 上传类目请求数据
   getGoods() {
     Taro.request({
-      url: 'http://127.0.0.1:7001/getGoods',
+      url: 'https://home.hhp.im/getGoods',
       method: 'GET'
     }).then(res => {
       const data = res.data.reverse(); // 把返回的数组调换顺序
@@ -127,7 +126,7 @@ export default class Index extends Component {
         success(res) {
           console.log(res);
           Taro.request({
-            url: 'http://127.0.0.1:7001/onLogin',
+            url: 'https://home.hhp.im/onLogin',
             method: 'POST',
             data: {
               code: res.code,
@@ -156,7 +155,7 @@ export default class Index extends Component {
     let goodDetail = e.currentTarget.dataset.gooddetail;
     let openId = this.state.openId;
     Taro.request({
-      url: 'http://127.0.0.1:7001/shoppingCart',
+      url: 'https://home.hhp.im/shoppingCart',
       method: 'POST',
       data: {
         shoppingNum: 1,
