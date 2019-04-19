@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text, Button } from '@tarojs/components'
-import { AtIcon, AtButton } from 'taro-ui'
+import { HOST } from '@common/js/config.js'
 
 import './orderDetail.scss'
 
@@ -36,7 +36,7 @@ export default class orderDetail extends Component {
   //生命周期 每当这页显示的时候要去后台请求数据库
   componentDidShow() {
     Taro.request({
-      url: 'https://home.hhp.im/getOrderDetail',
+      url: `${HOST}/getOrderDetail`,
       method: 'POST',
       data: {
         out_trade_no: this.state.out_trade_no
@@ -94,7 +94,7 @@ export default class orderDetail extends Component {
       success: function (res) {
         if (res.confirm) {
           Taro.request({
-            url: 'https://home.hhp.im/changeOrderStatus',
+            url: `${HOST}/changeOrderStatus`,
             method: 'POST',
             data: {
               out_trade_no: that.state.out_trade_no,
@@ -121,7 +121,7 @@ export default class orderDetail extends Component {
   pay() {
     // 删除原订单
     Taro.request({
-      url: 'https://home.hhp.im/deleteOrder',
+      url: `${HOST}/deleteOrder`,
       method: 'POST',
       data: {
         out_trade_no: this.state.out_trade_no
@@ -143,7 +143,7 @@ export default class orderDetail extends Component {
 
         // 统一下单返回预支付信息
         Taro.request({
-          url: 'https://home.hhp.im/toRePay',
+          url: `${HOST}/toRePay`,
           method: 'POST',
           data: {
             openId: this.state.openId,
@@ -153,7 +153,7 @@ export default class orderDetail extends Component {
             out_trade_no: out_trade_no,
             total_fee: this.state.order.total_fee * 100,
             spbill_create_ip: '127.0.0.1',
-            notify_url: 'https://home.hhp.im/getWechatMes',
+            notify_url: `${HOST}/getWechatMes`,
             trade_type: 'JSAPI'
           }
         }).then(res => {
@@ -162,7 +162,7 @@ export default class orderDetail extends Component {
 
           // 再次签名
           Taro.request({
-            url: 'https://home.hhp.im/signAgain',
+            url: `${HOST}/signAgain`,
             method: 'POST',
             data: {
               prepay_id: prepay_id,
@@ -187,7 +187,7 @@ export default class orderDetail extends Component {
                 } else {
                   // 其他情况先查询订单是否支付成功
                   Taro.request({
-                    url: 'https://home.hhp.im/checkOrder',
+                    url: `${HOST}/checkOrder`,
                     method: 'POST',
                     data: {
                       appid: 'wx083cd7624c4db2ec',
@@ -216,7 +216,7 @@ export default class orderDetail extends Component {
                 } else {
                   // 其他失败情况先查询订单是否未支付
                   Taro.request({
-                    url: 'https://home.hhp.im/checkOrder',
+                    url: `${HOST}/checkOrder`,
                     method: 'POST',
                     data: {
                       appid: 'wx083cd7624c4db2ec',
@@ -258,7 +258,7 @@ export default class orderDetail extends Component {
     let that = this
     setTimeout(function () {
       Taro.request({
-        url: 'https://home.hhp.im/changeOrderStatus',
+        url: `${HOST}/changeOrderStatus`,
         method: 'POST',
         data: {
           out_trade_no: that.state.out_trade_no,
@@ -267,7 +267,7 @@ export default class orderDetail extends Component {
       }).then(res => {
         if (res.data[0].status === "已关闭") {
           Taro.request({
-            url: 'https://home.hhp.im/closeOrder',
+            url: `${HOST}/closeOrder`,
             method: 'POST',
             data: {
               appid: 'wx083cd7624c4db2ec',
@@ -289,7 +289,7 @@ export default class orderDetail extends Component {
       success: function (res) {
         if (res.confirm) {
           Taro.request({
-            url: 'https://home.hhp.im/changeOrderStatus',
+            url: `${HOST}/changeOrderStatus`,
             method: 'POST',
             data: {
               out_trade_no: that.state.out_trade_no,
@@ -319,7 +319,7 @@ export default class orderDetail extends Component {
       success: function (res) {
         if (res.confirm) {
           Taro.request({
-            url: 'https://home.hhp.im/changeOrderStatus',
+            url: `${HOST}/changeOrderStatus`,
             method: 'POST',
             data: {
               out_trade_no: that.state.out_trade_no,
@@ -345,7 +345,7 @@ export default class orderDetail extends Component {
   // 生成订单存入数据库
   saveOrder(status) {
     Taro.request({
-      url: 'https://home.hhp.im/addOrder',
+      url: `${HOST}/addOrder`,
       method: 'POST',
       data: {
         openId: this.state.openId,
@@ -368,7 +368,7 @@ export default class orderDetail extends Component {
   // 改变库存数量
   changeAmount() {
     Taro.request({
-      url: 'https://home.hhp.im/changeAmount',
+      url: `${HOST}/changeAmount`,
       method: 'POST',
       data: {
         payGoods: this.state.order.payGoods
@@ -380,13 +380,13 @@ export default class orderDetail extends Component {
 
   // 删除购物车中该商品
   deleteCartGood() {
-    this.state.order.payGoods.map((goodsDetail) => {
+    this.state.order.payGoods.forEach(element => {
       Taro.request({
-        url: 'https://home.hhp.im/deleteUserCart',
+        url: `${HOST}/deleteUserCart`,
         method: 'POST',
         data: {
           openId: this.state.openId,
-          goodsId: goodsDetail.goodsId
+          goodsId: element.goodsId
         }
       }).then(res => {
         console.log(res.data);
@@ -405,7 +405,7 @@ export default class orderDetail extends Component {
     const order = this.state.order
     const goodDetails = order.payGoods.map((goodDetail) => {
       return (
-        <View className='cartDetails'>
+        <View className='cartDetails' key={goodDetail.goodsId}>
           <View className='goodDetail'>
             <Image className='good-image' mode='aspectFill' src={goodDetail.titleUrl}></Image>
             <View className='good-text'>

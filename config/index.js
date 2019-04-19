@@ -1,3 +1,4 @@
+const path = require('path')
 const config = {
   projectName: 'web-taro',
   date: '2018-8-26',
@@ -44,6 +45,9 @@ const config = {
       ],
       compileOnSave: false
     }
+  },
+  alias: {
+    '@common': path.resolve(__dirname, '..', 'src/common'),
   },
   defineConstants: {
   },

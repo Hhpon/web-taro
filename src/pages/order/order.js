@@ -1,6 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text, Button } from '@tarojs/components'
 import { AtIcon } from 'taro-ui'
+import { HOST } from '@common/js/config.js'
 
 import './order.scss'
 
@@ -45,9 +46,9 @@ export default class order extends Component {
   // 算出商品总价
   counttotalPrices(payGoods) {
     let totalPrices = 0;
-    payGoods.map((goodsDetail) => {
-      if (goodsDetail.goodcheckStatus) {
-        totalPrices += goodsDetail.price * goodsDetail.shoppingNum
+    payGoods.forEach(element => {
+      if (element.goodcheckStatus) {
+        totalPrices += element.price * element.shoppingNum
       }
     })
     this.setState({
@@ -168,7 +169,7 @@ export default class order extends Component {
 
     // 统一下单返回预支付信息
     Taro.request({
-      url: 'https://home.hhp.im/toRePay',
+      url: `${HOST}/toRePay`,
       method: 'POST',
       data: {
         openId: this.state.openId,
@@ -178,7 +179,7 @@ export default class order extends Component {
         out_trade_no: out_trade_no,
         total_fee: this.state.totalPrices * 100,
         spbill_create_ip: '127.0.0.1',
-        notify_url: 'https://home.hhp.im/getWechatMes',
+        notify_url: `${HOST}/getWechatMes`,
         trade_type: 'JSAPI'
       }
     }).then(res => {
@@ -187,7 +188,7 @@ export default class order extends Component {
 
       // 再次签名
       Taro.request({
-        url: 'https://home.hhp.im/signAgain',
+        url: `${HOST}/signAgain`,
         method: 'POST',
         data: {
           prepay_id: prepay_id,
@@ -212,7 +213,7 @@ export default class order extends Component {
             } else {
               // 其他情况先查询订单是否支付成功
               Taro.request({
-                url: 'https://home.hhp.im/checkOrder',
+                url: `${HOST}/checkOrder`,
                 method: 'POST',
                 data: {
                   appid: 'wx083cd7624c4db2ec',
@@ -241,7 +242,7 @@ export default class order extends Component {
             } else {
               // 其他失败情况先查询订单是否未支付
               Taro.request({
-                url: 'https://home.hhp.im/checkOrder',
+                url: `${HOST}/checkOrder`,
                 method: 'POST',
                 data: {
                   appid: 'wx083cd7624c4db2ec',
@@ -281,7 +282,7 @@ export default class order extends Component {
     let that = this
     setTimeout(function () {
       Taro.request({
-        url: 'https://home.hhp.im/changeOrderStatus',
+        url: `${HOST}/changeOrderStatus`,
         method: 'POST',
         data: {
           out_trade_no: that.state.out_trade_no,
@@ -290,7 +291,7 @@ export default class order extends Component {
       }).then(res => {
         if (res.data[0].status === "已关闭") {
           Taro.request({
-            url: 'https://home.hhp.im/closeOrder',
+            url: `${HOST}/closeOrder`,
             method: 'POST',
             data: {
               appid: 'wx083cd7624c4db2ec',
@@ -306,7 +307,7 @@ export default class order extends Component {
   // 生成订单存入数据库
   saveOrder(status) {
     Taro.request({
-      url: 'https://home.hhp.im/addOrder',
+      url: `${HOST}/addOrder`,
       method: 'POST',
       data: {
         openId: this.state.openId,
@@ -329,7 +330,7 @@ export default class order extends Component {
   // 改变库存数量
   changeAmount() {
     Taro.request({
-      url: 'https://home.hhp.im/changeAmount',
+      url: `${HOST}/changeAmount`,
       method: 'POST',
       data: {
         payGoods: this.state.payGoods
@@ -341,13 +342,13 @@ export default class order extends Component {
 
   // 删除购物车中该商品
   deleteCartGood() {
-    this.state.payGoods.map((goodsDetail) => {
+    this.state.payGoods.forEach(element => {
       Taro.request({
-        url: 'https://home.hhp.im/deleteUserCart',
+        url: `${HOST}/deleteUserCart`,
         method: 'POST',
         data: {
           openId: this.state.openId,
-          goodsId: goodsDetail.goodsId
+          goodsId: element.goodsId
         }
       }).then(res => {
         console.log(res.data);
@@ -389,7 +390,7 @@ export default class order extends Component {
 
     const cartDetails = this.state.payGoods.map((goodsDetail) => {
       return (
-        <View className='cartDetails'>
+        <View className='cartDetails' key={goodsDetail.goodsId}>
           <View className='goodDetail'>
             <Image className='good-image' mode='aspectFill' src={goodsDetail.titleUrl}></Image>
             <View className='good-text'>
