@@ -1,6 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image, Swiper } from '@tarojs/components'
 import { AtIcon } from 'taro-ui'
+import { HOST } from '@common/js/config.js'
 
 import './index.scss'
 
@@ -54,6 +55,8 @@ export default class Index extends Component {
 
   // 定义导航栏的点击事件
   navActive(index, e) {
+    console.log(index);
+    console.log(e);
     this.setState({
       currentIndex: index
     })
@@ -71,7 +74,7 @@ export default class Index extends Component {
   // 上传类目请求数据
   getGoods() {
     Taro.request({
-      url: 'https://home.hhp.im/getGoods',
+      url: `${HOST}/getGoods`,
       method: 'GET'
     }).then(res => {
       const data = res.data.reverse(); // 把返回的数组调换顺序
@@ -89,9 +92,9 @@ export default class Index extends Component {
         }
       });
 
-      data.map((goods) => {
-        if (goods.classifyValue.indexOf(this.state.currentIndex) !== -1) {
-          Goods.push(goods)
+      data.forEach(element => {
+        if (element.classifyValue.indexOf(this.state.currentIndex) !== -1) {
+          Goods.push(element)
         }
       })
 
@@ -126,7 +129,7 @@ export default class Index extends Component {
         success(res) {
           console.log(res);
           Taro.request({
-            url: 'https://home.hhp.im/onLogin',
+            url: `${HOST}/onLogin`,
             method: 'POST',
             data: {
               code: res.code,
@@ -155,7 +158,7 @@ export default class Index extends Component {
     let goodDetail = e.currentTarget.dataset.gooddetail;
     let openId = this.state.openId;
     Taro.request({
-      url: 'https://home.hhp.im/shoppingCart',
+      url: `${HOST}/shoppingCart`,
       method: 'POST',
       data: {
         shoppingNum: 1,
@@ -195,13 +198,13 @@ export default class Index extends Component {
     const navHeader = navList.map((nav) => {
       return (
         // <View className="{{index === navNum?'hover-nav':'nav'}}" onClick={this.navActive} data-index='{{index}}'>{nav}</View>
-        <Text className={`nav ${nav.index === this.state.currentIndex ? 'hover-nav' : null}`} onClick={this.navActive.bind(this, nav.index)}>{nav.text}</Text>
+        <Text key={nav.index} className={`nav ${nav.index === this.state.currentIndex ? 'hover-nav' : null}`} onClick={this.navActive.bind(this, nav.index)}>{nav.text}</Text>
       )
     })
 
     const imgList = this.state.sliderGoods.map((sliderGood) => {
       return (
-        <Swiper-item>
+        <Swiper-item key={sliderGood.goodsId}>
           <Image mode='widthFix' onClick={this.goodsActive} data-goodid='{{sliderGood.goodsId}}' onLoad={this.imageLoad} className='image' src={sliderGood.sliderUrl} />
         </Swiper-item>
       )
@@ -209,7 +212,7 @@ export default class Index extends Component {
 
     const goodsDetails = this.state.Goods.map((good) => {
       return (
-        <View className='goods-container' onClick={this.goodsActive} data-goodid='{{good.goodsId}}'>
+        <View key={good.goodsId} className='goods-container' onClick={this.goodsActive} data-goodid='{{good.goodsId}}'>
           <Image className='goods-image' src={good.titleUrl}></Image>
           <View className='goods-message'>
             <View className='message-title'>

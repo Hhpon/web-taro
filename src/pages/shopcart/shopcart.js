@@ -1,5 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text, Button } from '@tarojs/components'
+import { HOST } from '@common/js/config.js'
 import { AtIcon } from 'taro-ui'
 import nullshop from '../../asset/images/nullshop.png'
 
@@ -32,7 +33,7 @@ export default class shopcart extends Component {
   //生命周期 每当这页显示的时候要去后台请求数据库
   componentDidShow() {
     Taro.request({
-      url: 'https://home.hhp.im/getUserInfo',
+      url: `${HOST}/getUserInfo`,
       data: {
         openId: this.state.openId
       }
@@ -41,7 +42,7 @@ export default class shopcart extends Component {
       this.setState({
         cart: res.data.cart
       })
-      if (res.data.cart.length === 0) {
+      if (res.data.cart === []) {
         console.log('Kong');
       }
       this.ischeckColor(res.data.cart);
@@ -59,9 +60,10 @@ export default class shopcart extends Component {
 
   // 判断全选按钮状态
   ischeckColor(cart) {
+    console.log(cart);
     let statusNum = 0;
-    cart.map((goodsDetail) => {
-      if (goodsDetail.goodcheckStatus) {
+    cart.forEach(element => {
+      if (element.goodcheckStatus) {
         statusNum += 1;
       }
     })
@@ -81,9 +83,9 @@ export default class shopcart extends Component {
   // 算出购物车内商品价格
   counttotalPrices(cart) {
     let totalPrices = 0;
-    cart.map((goodsDetail) => {
-      if (goodsDetail.goodcheckStatus) {
-        totalPrices += goodsDetail.price * goodsDetail.shoppingNum;
+    cart.forEach(element => {
+      if (element.goodcheckStatus) {
+        totalPrices += element.price * element.shoppingNum;
       }
     })
     this.setState({
@@ -121,8 +123,8 @@ export default class shopcart extends Component {
   //点击全选的方法
   checkallHandle() {
     if (this.state.checkColor === '#61BA76') {
-      this.state.cart.map((goodsDetail) => {
-        goodsDetail.goodcheckStatus = false;
+      this.state.cart.forEach(element => {
+        element.goodcheckStatus = false;
       })
       this.setState({
         cart: this.state.cart
@@ -133,8 +135,8 @@ export default class shopcart extends Component {
         this.counttotalPrices(cart);
       })
     } else {
-      this.state.cart.map((goodsDetail) => {
-        goodsDetail.goodcheckStatus = true;
+      this.state.cart.forEach(element => {
+        element.goodcheckStatus = true;
       })
       this.setState({
         cart: this.state.cart
@@ -173,7 +175,7 @@ export default class shopcart extends Component {
 
     // 把更改的数据上传到数据库
     Taro.request({
-      url: 'https://home.hhp.im/editUserCart',
+      url: `${HOST}/editUserCart`,
       method: 'POST',
       data: {
         kindof: 'add',
@@ -205,7 +207,7 @@ export default class shopcart extends Component {
         success: function (res) {
           if (res.confirm) {
             Taro.request({
-              url: 'https://home.hhp.im/deleteUserCart',
+              url: `${HOST}/deleteUserCart`,
               method: 'POST',
               data: {
                 openId: openId,
@@ -257,7 +259,7 @@ export default class shopcart extends Component {
         })
       }
       Taro.request({
-        url: 'https://home.hhp.im/editUserCart',
+        url: `${HOST}/editUserCart`,
         method: 'POST',
         data: {
           kindof: 'subtract',
@@ -274,9 +276,9 @@ export default class shopcart extends Component {
   // 跳转至确认订单
   toOrder() {
     let payGoods = [];
-    this.state.cart.map((goodsDetail) => {
-      if (goodsDetail.goodcheckStatus) {
-        payGoods.push(goodsDetail)
+    this.state.cart.forEach(element => {
+      if (element.goodcheckStatus) {
+        payGoods.push(element)
       }
     })
     if (payGoods.length === 0) {
@@ -293,9 +295,9 @@ export default class shopcart extends Component {
   }
 
   render() {
-    const cart = this.state.cart
+    const cartLength = this.state.cart.length
     const nullCart = null
-    if (cart.length === 0) {
+    if (cartLength === 0) {
       nullCart =
         <View className='nullCart'>
           <Image src={nullshop} style='width:70px;height:70px;'></Image>
@@ -303,9 +305,9 @@ export default class shopcart extends Component {
         </View>
     }
 
-    const cartDetails = this.state.cart.map((goodsDetail) => {
+    const cartDetails = this.state.cart.map((goodsDetail, index) => {
       return (
-        <View className='cartDetails'>
+        <View className='cartDetails' key={goodsDetail.goodsId}>
           <View onClick={this.goodcheckHandle} data-index='{{index}}'>
             <AtIcon value='check-circle' size='20' color={goodsDetail.goodcheckStatus ? '#61BA76' : '#e4e4e4'}></AtIcon>
           </View>

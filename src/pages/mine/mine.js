@@ -1,6 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text } from '@tarojs/components'
 import { AtIcon, AtBadge } from 'taro-ui'
+import { HOST } from '@common/js/config.js'
 
 import './mine.scss'
 
@@ -26,7 +27,7 @@ export default class mine extends Component {
       openId: openId
     })
     Taro.request({
-      url: 'https://home.hhp.im/getUserInfo',
+      url: `${HOST}/getUserInfo`,
       data: {
         openId: openId
       }
@@ -41,25 +42,24 @@ export default class mine extends Component {
   //生命周期 每当这页显示的时候要去后台请求数据库
   componentDidShow() {
     Taro.request({
-      url: 'https://home.hhp.im/getOrders',
+      url: `${HOST}/getOrders`,
       method: 'POST',
       data: {
         openId: this.state.openId
       }
     }).then(res => {
-      console.log(res.data)
       let pendingPayment = []
       let toBeDelivered = []
       let pendingReceipt = []
-      res.data.map((orderItem) => {
-        if (orderItem.status === '待付款') {
-          pendingPayment.push(orderItem)
+      res.data.forEach(element => {
+        if (element.status === '待付款') {
+          pendingPayment.push(element)
         }
-        if (orderItem.status === '待发货') {
-          toBeDelivered.push(orderItem)
+        if (element.status === '待发货') {
+          toBeDelivered.push(element)
         }
-        if (orderItem.status === '待收货') {
-          pendingReceipt.push(orderItem)
+        if (element.status === '待收货') {
+          pendingReceipt.push(element)
         }
       })
       this.setState({
@@ -154,9 +154,9 @@ export default class mine extends Component {
             </View>
           </View>
         </View>
-        <View>
+        {/* <View>
           <AtIcon value='map-pin' size='24' color='#5FC768'></AtIcon>
-        </View>
+        </View> */}
         <View></View>
       </View>
     )

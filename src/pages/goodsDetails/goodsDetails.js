@@ -1,6 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Button, Image } from '@tarojs/components'
-import { AtFloatLayout, AtInputNumber, AtIcon } from 'taro-ui'
+import { AtIcon } from 'taro-ui'
+import { HOST } from '@common/js/config.js'
 
 import './goodsDetails.scss'
 
@@ -22,7 +23,7 @@ export default class goodsDetails extends Component {
     const goodId = this.$router.params.goodid;
     console.log(goodId);
     Taro.request({
-      url: 'https://home.hhp.im/getGoodDetails',
+      url: `${HOST}/getGoodDetails`,
       method: 'POST',
       data: {
         goodId: goodId
@@ -40,7 +41,7 @@ export default class goodsDetails extends Component {
     let goodDetail = this.state.goodDetails;
     const openId = Taro.getStorageSync('openid');
     Taro.request({
-      url: 'https://home.hhp.im/shoppingCart',
+      url: `${HOST}/shoppingCart`,
       method: 'POST',
       data: {
         goodDetail: goodDetail,
@@ -116,7 +117,7 @@ export default class goodsDetails extends Component {
   sellNowButton() {
     const openId = Taro.getStorageSync('openid');
     Taro.request({
-      url: 'https://home.hhp.im/shoppingCart',
+      url: `${HOST}/shoppingCart`,
       method: 'POST',
       data: {
         shoppingNum: this.state.sellNum,
@@ -140,10 +141,11 @@ export default class goodsDetails extends Component {
 
   render() {
     const goodDetails = this.state.goodDetails;
+    console.log(goodDetails);
     const isOpened = this.state.isOpened;
     const details = goodDetails.detailsUrl.map(detailUrl => {
       return (
-        <Image mode='widthFix' style='width:100%' src={detailUrl}></Image>
+        <Image key={detailUrl} mode='widthFix' style='width:100%' src={detailUrl}></Image>
       )
     })
     return (

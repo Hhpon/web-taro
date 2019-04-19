@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text, Button } from '@tarojs/components'
-
+import { HOST } from '@common/js/config.js'
 import './orderList.scss'
 
 
@@ -34,7 +34,7 @@ export default class orderList extends Component {
   //生命周期 每当这页显示的时候要去后台请求数据库
   componentDidShow() {
     Taro.request({
-      url: 'https://home.hhp.im/getOrders',
+      url: `${HOST}/getOrders`,
       method: 'POST',
       data: {
         openId: this.state.openId
@@ -46,18 +46,18 @@ export default class orderList extends Component {
       let toBeDelivered = []
       let pendingReceipt = []
       let completed = []
-      res.data.map((orderItem) => {
-        if (orderItem.status === '待付款') {
-          pendingPayment.push(orderItem)
+      res.data.forEach(element => {
+        if (element.status === '待付款') {
+          pendingPayment.push(element)
         }
-        if (orderItem.status === '待发货') {
-          toBeDelivered.push(orderItem)
+        if (element.status === '待发货') {
+          toBeDelivered.push(element)
         }
-        if (orderItem.status === '待收货') {
-          pendingReceipt.push(orderItem)
+        if (element.status === '待收货') {
+          pendingReceipt.push(element)
         }
-        if (orderItem.status === '已完成') {
-          completed.push(orderItem)
+        if (element.status === '已完成') {
+          completed.push(element)
         }
       })
       this.setState({
@@ -123,7 +123,7 @@ export default class orderList extends Component {
 
     const tabs = tabList.map((tabItem) => {
       return (
-        <Text className={`tabsItem ${tabItem.index === this.state.currentIndex ? 'tabsItemActive' : null}`} onClick={this.changeTab.bind(this, tabItem.index)}>{tabItem.text}</Text>
+        <Text key={tabItem.index} className={`tabsItem ${tabItem.index === this.state.currentIndex ? 'tabsItemActive' : null}`} onClick={this.changeTab.bind(this, tabItem.index)}>{tabItem.text}</Text>
       )
     })
 
@@ -131,7 +131,7 @@ export default class orderList extends Component {
     const orderList = this.state.orderList
     const orders = orderList.map((order) => {
       return (
-        <View className='orders' onClick={this.toOrderDetail.bind(this, order.out_trade_no)}>
+        <View key={order.out_trade_no} className='orders' onClick={this.toOrderDetail.bind(this, order.out_trade_no)}>
           <View className='orderTop'>
             <View className='orderNum'>订单号：{order.out_trade_no}</View>
             <View className='orderStatus'>{order.status}</View>
@@ -139,7 +139,7 @@ export default class orderList extends Component {
           <View>
             {order.payGoods.map((orderItem) => {
               return (
-                <View className='cartDetails'>
+                <View key={orderItem.goodsId} className='cartDetails'>
                   <View className='goodDetail'>
                     <Image className='good-image' mode='aspectFill' src={orderItem.titleUrl}></Image>
                     <View className='good-text'>
