@@ -7,9 +7,11 @@ page {
       display: flex;
       flex-direction: column;
       align-items: center;
+      background-color: #F7F7F7;
+
       .nullCartText {
         font-size: 28px;
-        margin: 20px;
+        margin: 20px 0;
       }
     }
 
@@ -101,11 +103,11 @@ page {
       }
 
       .pay-handle {
-        width: 55%;
+        width: 65%;
         display: flex;
 
         .totle-amount {
-          width: 40%;
+          width: 60%;
 
           .amount-text {
             color: #FFAC46;

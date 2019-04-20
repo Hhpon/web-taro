@@ -255,29 +255,6 @@ export default class orderDetail extends Component {
       duration: 2000
     })
     this.saveOrder('待付款') //生成待付款订单
-    let that = this
-    setTimeout(function () {
-      Taro.request({
-        url: `${HOST}/changeOrderStatus`,
-        method: 'POST',
-        data: {
-          out_trade_no: that.state.out_trade_no,
-          status: '已关闭'
-        }
-      }).then(res => {
-        if (res.data[0].status === "已关闭") {
-          Taro.request({
-            url: `${HOST}/closeOrder`,
-            method: 'POST',
-            data: {
-              appid: 'wx083cd7624c4db2ec',
-              mch_id: '1513854421',
-              out_trade_no: that.state.out_trade_no
-            }
-          })
-        }
-      })
-    }, 1800000)
   }
 
   // 是否申请退款
@@ -401,6 +378,13 @@ export default class orderDetail extends Component {
     })
   }
 
+  // 联系卖家
+  contact() {
+    Taro.navigateTo({
+      url: '../contact/contact'
+    })
+  }
+
   render() {
     const order = this.state.order
     const goodDetails = order.payGoods.map((goodDetail) => {
@@ -442,7 +426,7 @@ export default class orderDetail extends Component {
     if (refundBtn === true) {
       Btns =
         <View className='btns'>
-          <Button className='cancelPayBtn' openType='contact'>联系卖家</Button>
+          <Button className='cancelPayBtn' onClick={this.contact}>联系卖家</Button>
           <Button className='cancelPayBtn' onClick={this.toRefund}>申请退款</Button>
           <Button className='payBtn' onClick={this.confirmReceipt}>确认收货</Button>
         </View>
