@@ -7,7 +7,7 @@ import './index.scss'
 
 export default class Index extends Component {
   config = {
-    navigationBarTitleText: '全家享'
+    navigationBarTitleText: '健康家园'
   }
 
   constructor() {
@@ -142,6 +142,11 @@ export default class Index extends Component {
             })
             Taro.setStorage({ key: 'openid', data: res.data }).then(res => {
               console.log('存储成功');
+              Taro.showToast({
+                title: '授权成功',
+                icon: 'success',
+                duration: 2000
+              })
             })
           })
         }
@@ -254,7 +259,11 @@ export default class Index extends Component {
         {
           isUserOpened &&
           <View className='getUserinfo-button'>
-            <Button type='prime' open-type='getUserInfo' onGetUserInfo={this.getUserinfo}>授权</Button>
+            <View className='getUserinfo'>
+              <View className='title'>访问授权</View>
+              <View className='text'>请授权后使用！</View>
+              <Button className='btn' type='prime' open-type='getUserInfo' onGetUserInfo={this.getUserinfo}>立即授权</Button>
+            </View>
           </View>
         }
 

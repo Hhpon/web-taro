@@ -31,7 +31,6 @@ export default class order extends Component {
       openId: openId,
       payGoods: payGoods
     })
-    console.log(payGoods);
   }
 
   //生命周期 每当这页显示的时候要去后台请求数据库
@@ -52,7 +51,7 @@ export default class order extends Component {
       }
     })
     this.setState({
-      totalPrices: totalPrices
+      totalPrices: (totalPrices).toFixed(2)
     })
   }
 
@@ -279,29 +278,6 @@ export default class order extends Component {
       duration: 2000
     })
     this.saveOrder('待付款') //生成待付款订单
-    let that = this
-    setTimeout(function () {
-      Taro.request({
-        url: `${HOST}/changeOrderStatus`,
-        method: 'POST',
-        data: {
-          out_trade_no: that.state.out_trade_no,
-          status: '已关闭'
-        }
-      }).then(res => {
-        if (res.data[0].status === "已关闭") {
-          Taro.request({
-            url: `${HOST}/closeOrder`,
-            method: 'POST',
-            data: {
-              appid: 'wx083cd7624c4db2ec',
-              mch_id: '1513854421',
-              out_trade_no: that.state.out_trade_no
-            }
-          })
-        }
-      })
-    }, 1800000)
   }
 
   // 生成订单存入数据库
@@ -424,7 +400,7 @@ export default class order extends Component {
         </View>
         <View className='pay-container'>
           <View className='totle-amount'>
-            总计:
+            总计：
               <Text className='amount-text'>￥{this.state.totalPrices}</Text>
           </View>
           <View className='pay-button' onClick={this.checked}>结算</View>

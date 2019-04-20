@@ -40,7 +40,6 @@ export default class orderList extends Component {
         openId: this.state.openId
       }
     }).then(res => {
-      console.log(res.data)
       const index = Number(this.$router.params.index)
       let pendingPayment = []
       let toBeDelivered = []

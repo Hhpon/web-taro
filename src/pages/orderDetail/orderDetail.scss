@@ -70,6 +70,10 @@
     }
   }
 
+  button::after {
+    border: 0;
+  }
+
   .btns {
     display: flex;
     justify-content: flex-end;
@@ -95,6 +99,10 @@
       margin: 30px 0 30px 20px;
     }
   }
+}
+
+button::after {
+  border: 0;
 }
 
 .backBtn {
